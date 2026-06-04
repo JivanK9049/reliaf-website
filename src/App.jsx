@@ -99,24 +99,24 @@ desc:"Strong root development"
 
 {
 title:"Reliaf P+",
-image:"/P+ bacteria.png",
+image:"/p-bacteria.png",
 desc:"Improves phosphorus uptake"
 },
 
 {
 title:"Reliaf K+",
-image:"/K+ bacteria.png",
+image:"/k-bacteria.png",
 desc:"Improves potash uptake"
 },
 
 {
 title:"Reliaf N+",
-image:"/N+ bacatria.png",
+image:"/n-bacatria.png",
 desc:"Nitrogen fixing bacteria"
 },
 {
 title:"Reliaf Z+",
-image:"/Z+ bacteria.png",
+image:"/z-bacteria.png",
 desc:"Improves zinc availability in soil"
 },
 
