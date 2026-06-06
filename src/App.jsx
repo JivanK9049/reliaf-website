@@ -1078,7 +1078,7 @@ font-semibold
 text-green-600
 mb-6
 ">
-Director – Marketing & Business Development
+Director – Founder & Business Development
 </p>
 
 <p className="
@@ -1087,7 +1087,7 @@ leading-8
 text-lg
 ">
 Mr. Vishawajeet Jagtap holds a degree in
-B.Sc. Agriculture Management and brings
+B.Sc.Agri and brings
 strong expertise in market research,
 business management, and product development.
 With practical field experience and excellent
@@ -1197,7 +1197,7 @@ font-semibold
 text-green-600
 mb-6
 ">
-Director – Product Development & Strategy
+Director – Founder & Managing Director
 </p>
 
 <p className="
@@ -1208,12 +1208,11 @@ text-lg
 Mr. Shriram Kulkarni holds a degree in
 Agri-Business Management (ABM) along with
 an MBA in Agriculture.
-He specializes in market research,
-product development, and business management.
-With strong agricultural knowledge and practical
-field experience, he contributes to building
-effective business strategies that address
-modern farming challenges and improve farmer success.
+he combines agricultural expertise with strategic business leadership 
+to drive innovation and sustainable growth, and business management.
+Under his guidance, the company has grown into a trusted agricultural
+enterprise focused on quality products, regulatory excellence, farmer welfare, 
+and long-term value creation for the farming community.
 </p>
 
 <div className="
