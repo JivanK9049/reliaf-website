@@ -1078,7 +1078,7 @@ font-semibold
 text-green-600
 mb-6
 ">
-Director – Founder & Business Development
+Director – Founder Operations & Production Head
 </p>
 
 <p className="
@@ -1087,13 +1087,15 @@ leading-8
 text-lg
 ">
 Mr. Vishawajeet Jagtap holds a degree in
-B.Sc.Agri and brings
-strong expertise in market research,
-business management, and product development.
-With practical field experience and excellent
-marketing knowledge, he helps bridge modern
-business strategies with real-world farming needs,
-supporting sustainable growth for farmers and the company.
+B.Sc. Agriculture and brings
+Vishvajeet Vijay Jagtap brings a unique blend of technical expertise and operational 
+leadership to the executive team at Reliaf Agrotech Pvt. Ltd. 
+With a strong foundation in agricultural science, he is the driving force behind our manufacturing excellence. 
+Vishvajeet meticulously oversees our production facilities, 
+ensuring that all operations meet the highest standards of quality, 
+efficiency, and innovation.
+By bridging the gap between agronomic knowledge and hands-on manufacturing, 
+he ensures that every product developed at Reliaf Agrotech is optimized for maximum effectiveness in the field. 
 </p>
 
 <div className="
@@ -1577,7 +1579,11 @@ text-xl
 font-semibold
 text-gray-800
 ">
-+91 8793701270
+<div>
+  <a href="tel:+918793701270">+91 8793701270</a><br />
+  <a href="tel:+917774893247">+91 7774893247</a><br />
+  <a href="tel:+919075330820">+91 9075330820</a>
+</div>
 </p>
 
 </div>
