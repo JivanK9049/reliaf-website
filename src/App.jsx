@@ -166,6 +166,48 @@ title:"Soya Special",
 image:"/soya-special.png",
 desc:"Balanced nutrition for soybean crop growth and better production."
 },
+{
+title:"RE TRICO",
+image:"/retrico.png",
+desc:"Nature's micro power for healthy crops, stronger roots and higher yields."
+},
+
+{
+title:"RE BACILA",
+image:"/rebacila.png",
+desc:"Beneficial Bacillus formulation for soil health, disease protection and better productivity."
+},
+
+{
+title:"RE PAECILO",
+image:"/repaecilo.png",
+desc:"Powerful bio-formulation for nematode management, stronger roots and healthy crop growth."
+},
+
+{
+title:"RE FLOWER",
+image:"/reflower.png",
+desc:"Promotes flowering, pollination, fruit setting and higher crop yield."
+},
+
+{
+title:"RHIZO MAX",
+image:"/rhizomax.png",
+desc:"Advanced root promoter for stronger roots, nutrient uptake and vigorous growth."
+},
+
+{
+title:"RE SUDO",
+image:"/resudo.png",
+desc:"Bio-enriched microbial formulation for healthy soil, stronger plants and higher yields."
+},
+
+{
+title:"GROW MIX FERT",
+image:"/growmixfert.png",
+desc:"Complete multi-nutrient formula for balanced nutrition, better growth and maximum productivity."
+},
+
 ];
 
 const addToCart = (item) => {
@@ -589,7 +631,6 @@ rounded-[30px]
 overflow-hidden
 shadow-lg
 hover:shadow-2xl
-hover:-translate-y-3
 transition-all
 duration-500
 border
@@ -609,17 +650,18 @@ p-5
 ">
 
 <img
-src={item.image}
-alt={item.title}
-className="
-w-full
-h-[220px]
-object-contain
-mx-auto
-group-hover:scale-110
-transition
-duration-500
-"
+  src={item.image}
+  alt={item.title}
+  className="
+  w-full
+  h-[350px]
+  object-cover
+  rounded-xl
+  mx-auto
+  group-hover:scale-105
+  transition
+  duration-500
+  "
 />
 
 </div>
