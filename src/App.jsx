@@ -92,9 +92,9 @@ const t = translations[lang];
 const products=[
 
 {
-title:"Root Faster 98%",
-image:"/Root Faster.png",
-desc:"Strong root development"
+  title: "Root Faster 98%",
+  image: "/Root Faster.png",
+  desc: "Advanced humic-based formulation for stronger roots, improved nutrient availability, healthier plants and higher yields."
 },
 
 {
@@ -404,7 +404,9 @@ Certificate
 <a href="#results" className="hover:text-green-700 transition">
 Results
 </a>
-
+<a href="#licenses" className="hover:text-green-700 transition">
+Licenses
+</a>
 <a href="#contact" className="hover:text-green-700 transition">
 Contact
 </a>
@@ -646,21 +648,21 @@ flex-col
 bg-gradient-to-b
 from-green-50
 to-white
-p-5
+p-4
+flex
+justify-center
+items-center
+h-[380px]
 ">
 
 <img
   src={item.image}
   alt={item.title}
   className="
-  w-full
-  h-[350px]
-  object-cover
+  max-h-full
+  max-w-full
+  object-contain
   rounded-xl
-  mx-auto
-  group-hover:scale-105
-  transition
-  duration-500
   "
 />
 
@@ -1091,7 +1093,7 @@ items-center
 
 <img
 src="/director2.png"
-alt="Vishawajeet Jagtap"
+alt="Vishvajeet Jagtap"
 className="
 w-full
 max-w-md
@@ -1398,6 +1400,67 @@ duration-500
 </div>
 
 ))}
+
+</div>
+
+</div>
+
+</section>
+{/* LICENSES & REGISTRATIONS */}
+
+<section id="licenses" className="py-20 bg-gradient-to-b from-green-50 to-white">
+
+<div className="max-w-7xl mx-auto px-6">
+
+<div className="text-center mb-12">
+
+<h2 className="text-4xl md:text-5xl font-bold text-green-700">
+Licenses & Registrations
+</h2>
+
+<p className="text-gray-600 mt-4">
+Certified and Registered Agricultural Solutions Provider
+</p>
+
+</div>
+
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+<div className="bg-white p-6 rounded-3xl shadow-xl border border-green-100">
+<h3 className="text-xl font-bold text-green-700 mb-3">
+GST Registration
+</h3>
+<p className="text-gray-700 break-all">
+GSTIN: 27AAOCR6086N1ZE
+</p>
+</div>
+
+<div className="bg-white p-6 rounded-3xl shadow-xl border border-green-100">
+<h3 className="text-xl font-bold text-green-700 mb-3">
+Bio-Fertilizer License
+</h3>
+<p className="text-gray-700 break-all">
+LCFWD2025120498
+</p>
+</div>
+
+<div className="bg-white p-6 rounded-3xl shadow-xl border border-green-100">
+<h3 className="text-xl font-bold text-green-700 mb-3">
+Bio-Stimulant License
+</h3>
+<p className="text-gray-700 break-all">
+LCBWD1220250148
+</p>
+</div>
+
+<div className="bg-white p-6 rounded-3xl shadow-xl border border-green-100">
+<h3 className="text-xl font-bold text-green-700 mb-3">
+CIN Number
+</h3>
+<p className="text-gray-700 break-all">
+U20210PN2025PTC241544
+</p>
+</div>
 
 </div>
 
@@ -2098,7 +2161,29 @@ className="bg-black text-white px-4 py-3 rounded-xl text-sm font-bold"
 
 <footer className="bg-gray-900 text-white py-8 text-center">
 
-© 2026 Reliaf Agrotech Pvt Ltd
+<div className="max-w-5xl mx-auto px-4">
+
+<p className="font-bold text-lg">
+Reliaf Agrotech Pvt Ltd
+</p>
+
+<div className="mt-4 text-sm text-gray-300 space-y-1">
+
+<p>GSTIN: 27AAOCR6086N1ZE</p>
+
+<p>Bio-Fertilizer License: LCFWD2025120498</p>
+
+<p>Bio-Stimulant License: LCBWD1220250148</p>
+
+<p>CIN: U20210PN2025PTC241544</p>
+
+</div>
+
+<p className="mt-6 text-gray-400">
+© 2026 Reliaf Agrotech Pvt Ltd. All Rights Reserved.
+</p>
+
+</div>
 
 </footer>
 
