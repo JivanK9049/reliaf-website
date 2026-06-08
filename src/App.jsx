@@ -1113,7 +1113,7 @@ font-bold
 text-green-800
 mb-2
 ">
-Mr. Vishawajeet Jagtap
+Mr. Vishvajeet Jagtap
 </h3>
 
 <p className="
