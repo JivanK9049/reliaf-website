@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function ReliafAgrotechWebsite() {
+
+  useEffect(() => {
+    document.title =
+      "Reliaf Agrotech Pvt Ltd | Bio Fertilizers & Agricultural Solutions";
+  }, []);
 
 const [lang,setLang]=useState("en");
 const [cart, setCart] = useState([]);
@@ -405,6 +410,12 @@ Results
 <a href="#licenses" className="hover:text-green-700 transition">
 Licenses
 </a>
+<a
+  href="/leadership"
+  className="hover:text-green-700 transition"
+>
+  Leadership
+</a>
 <a href="#quality" className="hover:text-green-700 transition">
   Quality Policy
 </a>
@@ -500,6 +511,13 @@ text-sm
     >
       Licenses
     </a>
+    <a
+        href="/leadership"
+        onClick={() => setShowMobileMenu(false)}
+        className="block p-4 border-b"
+      >
+        Leadership
+    </a>
 
     <a
       href="#quality"
@@ -524,6 +542,7 @@ text-sm
     >
       Contact
     </a>
+
 
   </div>
 )}
@@ -597,51 +616,62 @@ Pvt Ltd
 
 <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center md:justify-start">
 
-<a
-href="#products"
-className="
-bg-white
-text-green-700
-px-8
-py-4
-rounded-2xl
-font-bold
-shadow-xl
-hover:scale-105
-hover:shadow-2xl
-transition
-text-center
-"
->
+  <a
+    href="#products"
+    className="
+    bg-white
+    text-green-700
+    px-8
+    py-4
+    rounded-2xl
+    font-bold
+    shadow-xl
+    hover:scale-105
+    hover:shadow-2xl
+    transition
+    text-center
+    "
+  >
+    {t.explore}
+  </a>
 
-{t.explore}
+  <a
+    href="#contact"
+    className="
+    border-2
+    border-white
+    px-8
+    py-4
+    rounded-2xl
+    font-bold
+    hover:bg-white
+    hover:text-green-700
+    transition
+    text-center
+    "
+  >
+    {t.contact}
+  </a>
 
-</a>
-
-<a
-href="#contact"
-className="
-border-2
-border-white
-px-8
-py-4
-rounded-2xl
-font-bold
-hover:bg-white
-hover:text-green-700
-transition
-text-center
-"
->
-
-{t.contact}
-
-</a>
+  <a
+    href="/leadership"
+    className="
+    bg-green-900
+    text-white
+    px-8
+    py-4
+    rounded-2xl
+    font-bold
+    hover:scale-105
+    transition
+    text-center
+    "
+  >
+    Meet Our Leadership Team
+  </a>
 
 </div>
-
-</div>
-
+</div> 
 {/* RIGHT SIDE IMAGE */}
 
 <div className="flex justify-center">
@@ -987,22 +1017,24 @@ className="w-full"
 
 <div className="bg-green-100 p-6 rounded-2xl text-center">
 <h3 className="text-3xl font-bold text-green-700">5000+</h3>
-<p className="text-center md:text-left">Happy Farmers</p>
+<p className="text-center">
+Happy Farmers
+</p>
 </div>
 
 <div className="bg-green-100 p-6 rounded-2xl text-center">
 <h3 className="text-3xl font-bold text-green-700">50+</h3>
-<p className="text-center md:text-left">Quality Products</p>
+<p className="text-center">Quality Products</p>
 </div>
 
 <div className="bg-green-100 p-6 rounded-2xl text-center">
 <h3 className="text-3xl font-bold text-green-700">10+</h3>
-<p className="text-center md:text-left">District Covered</p>
+<p className="text-center">Districts Covered</p>
 </div>
 
 <div className="bg-green-100 p-6 rounded-2xl text-center">
 <h3 className="text-3xl font-bold text-green-700">98%</h3>
-<p className="text-center md:text-left">Farmer Satisfaction</p>
+<p className="text-center">Farmer Satisfaction</p>
 </div>
 
 </div>
@@ -1010,403 +1042,6 @@ className="w-full"
 </div>
 
 </section>
-
-{/* DIRECTORS SECTION */}
-
-<section className="py-20 bg-gradient-to-br from-green-50 to-white">
-
-<div className="max-w-7xl mx-auto px-6">
-
-<h2 className="
-text-3xl
-md:text-5xl
-font-bold
-text-center
-text-green-700
-mb-4
-">
-Leadership & Expert Team
-</h2>
-
-<p className="
-text-center
-text-gray-600
-max-w-3xl
-mx-auto
-mb-16
-text-lg
-leading-relaxed
-">
-Meet the experienced leaders behind Reliaf Agrotech Pvt Ltd,
-dedicated to empowering farmers through innovation,
-research, sustainable agriculture, and modern farming solutions.
-</p>
-
-<div className="space-y-12">
-
-{/* DIRECTOR 1 */}
-
-<div className="
-bg-white
-rounded-[35px]
-shadow-2xl
-overflow-hidden
-grid
-grid-cols-1
-md:grid-cols-2
-items-center
-">
-
-<div className="p-6 flex justify-center">
-
-<img
-src="/director1.png"
-alt="Shashikant Kulkarni"
-className="
-w-full
-max-w-md
-rounded-3xl
-shadow-xl
-object-cover
-"
-/>
-
-</div>
-
-<div className="p-8 md:p-12">
-
-<h3 className="
-text-4xl
-font-bold
-text-green-800
-mb-2
-">
-Mr. Shashikant Kulkarni
-</h3>
-
-<p className="
-text-xl
-font-semibold
-text-green-600
-mb-6
-">
-Founder & Managing Director
-</p>
-
-<p className="
-text-gray-700
-leading-8
-text-lg
-">
-Mr. Shashikant Kulkarni brings more than 30 years of
-experience in agribusiness, sustainable farming,
-product development, and production management.
-He leads the company’s strategic vision by integrating
-innovative agricultural technologies with eco-friendly
-farming practices to improve crop productivity and
-support rural farming communities.
-</p>
-
-<div className="
-grid
-grid-cols-2
-gap-4
-mt-8
-">
-
-<div className="
-bg-green-50
-p-5
-rounded-2xl
-text-center
-">
-
-<h4 className="
-text-3xl
-font-bold
-text-green-700
-">
-30+
-</h4>
-
-<p className="text-gray-600">
-Years Experience
-</p>
-
-</div>
-
-<div className="
-bg-green-50
-p-5
-rounded-2xl
-text-center
-">
-
-<h4 className="
-text-lg
-font-bold
-text-green-700
-">
-Farmer Guidance
-</h4>
-
-<p className="text-gray-600">
-Production Management
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-{/* DIRECTOR 2 */}
-
-<div className="
-bg-white
-rounded-[35px]
-shadow-2xl
-overflow-hidden
-grid
-grid-cols-1
-md:grid-cols-2
-items-center
-">
-
-<div className="p-6 flex justify-center md:order-2">
-
-<img
-src="/director2.png"
-alt="Vishvajeet Jagtap"
-className="
-w-full
-max-w-md
-rounded-3xl
-shadow-xl
-object-cover
-"
-/>
-
-</div>
-
-<div className="p-8 md:p-12 md:order-1">
-
-<h3 className="
-text-4xl
-font-bold
-text-green-800
-mb-2
-">
-Mr. Vishvajeet Jagtap
-</h3>
-
-<p className="
-text-xl
-font-semibold
-text-green-600
-mb-6
-">
-Founder, Director of Operations & Production Head 
-| B.Sc. Agriculture
-</p>
-
-<p className="
-text-gray-700
-leading-8
-text-lg
-">
-Vishvajeet Vijay Jagtap drives manufacturing excellence and operational leadership at Reliaf Agrotech Pvt. Ltd.
-Leveraging his strong foundation in agricultural science, 
-he meticulously oversees production facilities to guarantee the highest standards of quality, efficiency, 
-and innovation.By bridging agronomic expertise with hands-on manufacturing,
-Vishvajeet ensures every product is fully optimized for field effectiveness. 
-As a core organizational pillar, his leadership and dedication are essential to delivering high-quality,
-reliable solutions to the farming community. 
-</p>
-
-<div className="
-grid
-grid-cols-2
-gap-4
-mt-8
-">
-
-<div className="
-bg-green-50
-p-5
-rounded-2xl
-text-center
-">
-
-<h4 className="
-text-3xl
-font-bold
-text-green-700
-">
-3+
-</h4>
-
-<p className="text-gray-600">
-Years Experience
-</p>
-
-</div>
-
-<div className="
-bg-green-50
-p-5
-rounded-2xl
-text-center
-">
-
-<h4 className="
-text-lg
-font-bold
-text-green-700
-">
-Market Research
-</h4>
-
-<p className="text-gray-600">
-Business Management
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-{/* DIRECTOR 3 */}
-
-<div className="
-bg-white
-rounded-[35px]
-shadow-2xl
-overflow-hidden
-grid
-grid-cols-1
-md:grid-cols-2
-items-center
-">
-
-<div className="p-6 flex justify-center">
-
-<img
-src="/director3.png"
-alt="Shriram Kulkarni"
-className="
-w-full
-max-w-md
-rounded-3xl
-shadow-xl
-object-cover
-"
-/>
-
-</div>
-
-<div className="p-8 md:p-12">
-
-<h3 className="
-text-4xl
-font-bold
-text-green-800
-mb-2
-">
-Mr. Shriram Kulkarni
-</h3>
-
-<p className="
-text-xl
-font-semibold
-text-green-600
-mb-6
-">
-Director – Founder & Managing Director
-</p>
-
-<p className="
-text-gray-700
-leading-8
-text-lg
-">
-Mr. Shriram Kulkarni holds a degree in
-Agri-Business Management (ABM) along with
-an MBA in Agriculture.
-he combines agricultural expertise with strategic business leadership 
-to drive innovation and sustainable growth, and business management.
-Under his guidance, the company has grown into a trusted agricultural
-enterprise focused on quality products, regulatory excellence, farmer welfare, 
-and long-term value creation for the farming community.
-</p>
-
-<div className="
-grid
-grid-cols-2
-gap-4
-mt-8
-">
-
-<div className="
-bg-green-50
-p-5
-rounded-2xl
-text-center
-">
-
-<h4 className="
-text-3xl
-font-bold
-text-green-700
-">
-3+
-</h4>
-
-<p className="text-gray-600">
-Years Experience
-</p>
-
-</div>
-
-<div className="
-bg-green-50
-p-5
-rounded-2xl
-text-center
-">
-
-<h4 className="
-text-lg
-font-bold
-text-green-700
-">
-Product Development
-</h4>
-
-<p className="text-gray-600">
-Business Strategy
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
 
 {/* FARMER RESULTS */}
 
@@ -2375,6 +2010,7 @@ className="bg-green-600 text-white px-4 py-3 rounded-xl text-sm font-bold"
 <a
 href="https://wa.me/918793701270"
 target="_blank"
+rel="noreferrer"
 className="bg-green-500 text-white px-4 py-3 rounded-xl text-sm font-bold"
 >
 💬 WhatsApp
