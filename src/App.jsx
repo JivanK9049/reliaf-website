@@ -4,11 +4,13 @@ export default function ReliafAgrotechWebsite() {
 
 const [lang,setLang]=useState("en");
 const [cart, setCart] = useState([]);
+const [showAllProducts, setShowAllProducts] = useState(false);
 const [name,setName] = useState("");
 const [mobile,setMobile] = useState("");
 const [village,setVillage] = useState("");
 const [requirement,setRequirement] = useState("");
 const [loading, setLoading] = useState(false);
+const [showMobileMenu, setShowMobileMenu] = useState(false);
 const translations = {
 
 en:{
@@ -209,7 +211,10 @@ desc:"Complete multi-nutrient formula for balanced nutrition, better growth and 
 },
 
 ];
-
+const visibleProducts =
+  showAllProducts
+    ? products
+    : products.slice(0, 8);
 const addToCart = (item) => {
 
 setCart((prevCart) => {
@@ -345,39 +350,32 @@ justify-between
 ">
 
 {/* LEFT */}
-
-<div className="flex items-center gap-3">
-
+<div className="relative flex items-center gap-3">
+<button
+  onClick={() => setShowMobileMenu(!showMobileMenu)}
+  className="md:hidden text-3xl text-green-700 font-bold"
+>
+  ☰
+</button>
 <img
-src="/logo.png"
-alt="logo"
-className="
-w-12
-h-12
-rounded-xl
-object-cover
-"
+  src="/logo.png"
+  alt="logo"
+  className="
+    w-12
+    h-12
+    rounded-xl
+    object-cover
+  "
 />
 
 <div>
+  <h2 className="font-bold text-sm md:text-xl text-green-800">
+    Reliaf Agrotech
+  </h2>
 
-<h2 className="
-font-bold
-text-lg
-md:text-xl
-text-green-800
-leading-tight
-">
-Reliaf Agrotech
-</h2>
-
-<p className="
-text-xs
-text-gray-500
-">
-Trusted By Farmers
-</p>
-
+  <p className="text-xs text-gray-500">
+    Trusted By Farmers
+  </p>
 </div>
 
 </div>
@@ -406,6 +404,12 @@ Results
 </a>
 <a href="#licenses" className="hover:text-green-700 transition">
 Licenses
+</a>
+<a href="#quality" className="hover:text-green-700 transition">
+  Quality Policy
+</a>
+<a href="#careers" className="hover:text-green-700 transition">
+  Careers
 </a>
 <a href="#contact" className="hover:text-green-700 transition">
 Contact
@@ -462,6 +466,67 @@ text-sm
 
 </div>
 
+{showMobileMenu && (
+  <div className="md:hidden bg-white border-t shadow-lg">
+
+<a
+  href="#products"
+  onClick={() => setShowMobileMenu(false)}
+  className="block p-4 border-b"
+>
+  Products
+</a>
+
+        <a
+      href="#certificate"
+      onClick={() => setShowMobileMenu(false)}
+      className="block p-4 border-b"
+    >
+      Certificate
+    </a>
+
+    <a
+      href="#results"
+      onClick={() => setShowMobileMenu(false)}
+      className="block p-4 border-b"
+    >
+      Results
+    </a>
+
+    <a
+      href="#licenses"
+      onClick={() => setShowMobileMenu(false)}
+      className="block p-4 border-b"
+    >
+      Licenses
+    </a>
+
+    <a
+      href="#quality"
+      onClick={() => setShowMobileMenu(false)}
+      className="block p-4 border-b"
+    >
+      Quality Policy
+    </a>
+
+    <a
+      href="#careers"
+      onClick={() => setShowMobileMenu(false)}
+      className="block p-4 border-b"
+    >
+      Careers
+    </a>
+
+    <a
+      href="#contact"
+      onClick={() => setShowMobileMenu(false)}
+      className="block p-4"
+    >
+      Contact
+    </a>
+
+  </div>
+)}
 </header>
 
 {/* HERO */}
@@ -543,6 +608,7 @@ rounded-2xl
 font-bold
 shadow-xl
 hover:scale-105
+hover:shadow-2xl
 transition
 text-center
 "
@@ -622,7 +688,7 @@ Products
 
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-{products.map((item,index)=>(
+{visibleProducts.map((item,index)=>(
 
 <div
 key={index}
@@ -633,12 +699,9 @@ rounded-[30px]
 overflow-hidden
 shadow-lg
 hover:shadow-2xl
+hover:-translate-y-2
 transition-all
 duration-500
-border
-border-green-100
-flex
-flex-col
 "
 >
 
@@ -652,7 +715,7 @@ p-4
 flex
 justify-center
 items-center
-h-[380px]
+h-[250px] md:h-[380px]
 ">
 
 <img
@@ -842,13 +905,31 @@ Inquiry
 </div>
 
 ))}
+</div>
 
+<div className="text-center mt-10">
+  <button
+    onClick={() => setShowAllProducts(!showAllProducts)}
+    className="
+      bg-green-700
+      text-white
+      px-6
+      py-3
+      rounded-xl
+      font-semibold
+    "
+  >
+    {showAllProducts
+      ? "Show Less Products"
+      : "View All Products"}
+  </button>
 </div>
 
 </section>
 
+
 {/* ISO Certificate Section */}
-<section id="certificate" className="py-20 bg-green-50">
+<section id="certificate" className="py-16 bg-green-50">
 
 <div className="max-w-6xl mx-auto px-6 text-center">
 
@@ -860,12 +941,17 @@ Inquiry
 Reliaf Agrotech Pvt Ltd follows certified quality standards.
 </p>
 
-<div className="bg-white p-6 rounded-3xl shadow-2xl inline-block">
+<div className="bg-white p-4 md:p-6 rounded-3xl shadow-2xl inline-block">
 
 <img
-src="/ISO.png"
-alt="ISO Certificate"
-className="w-full max-w-4xl rounded-xl"
+  src="/ISO.png"
+  alt="ISO Certificate"
+  className="
+    w-full
+    max-w-3xl
+    rounded-xl
+    mx-auto
+  "
 />
 
 </div>
@@ -1319,7 +1405,7 @@ Business Strategy
 </div>
 
 </section>
-```
+
 
 
 {/* FARMER RESULTS */}
@@ -1404,8 +1490,8 @@ duration-500
 </div>
 
 </div>
-
 </section>
+
 {/* LICENSES & REGISTRATIONS */}
 
 <section id="licenses" className="py-20 bg-gradient-to-b from-green-50 to-white">
@@ -1466,6 +1552,127 @@ U20210PN2025PTC241544
 
 </div>
 
+</section>
+{/* QUALITY POLICY */}
+
+<section id="quality" className="py-20 bg-white">
+
+  <div className="max-w-6xl mx-auto px-6">
+
+    <h2 className="text-4xl font-bold text-center text-green-700 mb-8">
+      Quality Policy
+    </h2>
+
+    <div className="bg-green-50 p-8 rounded-3xl shadow-xl border border-green-100">
+
+      <p className="text-lg text-gray-700 leading-8">
+        Reliaf Agrotech Pvt Ltd is committed to delivering
+        high-quality Bio-Fertilizers, Bio-Stimulants and
+        Agricultural Solutions. We maintain strict quality
+        control standards, use premium raw materials and
+        continuously improve our products to maximize
+        farmer satisfaction and sustainable agriculture.
+      </p>
+
+    </div>
+
+  </div>
+
+
+</section>
+
+<section id="careers" className="py-20 bg-green-50">
+  <div className="max-w-4xl mx-auto px-6">
+
+    <h2 className="text-4xl font-bold text-center text-green-700 mb-4">
+      Careers at Reliaf Agrotech
+    </h2>
+
+    <p className="text-center text-gray-600 mb-10">
+      Join Reliaf Agrotech Pvt Ltd and build your career in agricultural innovation, sales, marketing and farmer development.
+    </p>
+
+<form
+  action="https://formsubmit.co/reliafagrotech@gmail.com"
+  method="POST"
+  encType="multipart/form-data"
+  className="bg-white p-8 rounded-3xl shadow-xl space-y-5"
+>
+  <input
+  type="hidden"
+  name="_subject"
+  value="New Career Application - Reliaf Agrotech"
+/>
+
+<input
+  type="hidden"
+  name="_captcha"
+  value="false"
+/>
+<input
+  type="hidden"
+  name="_next"
+  value="https://reliafagrotech.com/thank-you"
+/>
+     <input
+      type="text"
+      name="full_name"
+      placeholder="Full Name"
+      required
+      className="w-full border p-4 rounded-xl"
+     />
+
+      <input
+        type="tel"
+        name="mobile_number"
+        placeholder="Mobile Number"
+        required
+        className="w-full border p-4 rounded-xl"
+      />
+
+      <input
+        type="email"
+        name="email"
+        placeholder="Email Address"
+        required
+        className="w-full border p-4 rounded-xl"
+      />
+
+      <select
+        name="position"
+        className="w-full border p-4 rounded-xl"
+        required
+      >
+        <option value="">Select Position</option>
+        <option>Sales Officer</option>
+        <option>Agriculture Officer</option>
+        <option>Marketing Executive</option>
+        <option>Area Sales Manager</option>
+      </select>
+
+      <input
+        type="text"
+        name="experience"
+        placeholder="Experience"
+        className="w-full border p-4 rounded-xl"
+      />
+
+      <input
+        type="file"
+        name="resume"
+        accept=".pdf"
+        className="w-full border p-4 rounded-xl"
+      />
+
+      <button
+        type="submit"
+        className="w-full bg-green-700 text-white py-4 rounded-xl font-bold"
+      >
+        Apply Now
+      </button>
+    </form>
+
+  </div>
 </section>
 
 {/* CONTACT */}
@@ -1677,17 +1884,15 @@ mb-2
 Mobile Number
 </p>
 
-<p className="
+<div className="
 text-xl
 font-semibold
 text-gray-800
 ">
-<div>
   <a href="tel:+918793701270">+91 8793701270</a><br />
   <a href="tel:+917774893247">+91 7774893247</a><br />
   <a href="tel:+919075330820">+91 9075330820</a>
 </div>
-</p>
 
 </div>
 
@@ -1800,6 +2005,7 @@ rounded-xl
 font-semibold
 shadow-md
 hover:scale-105
+hover:shadow-2xl
 transition
 "
 >
@@ -1819,6 +2025,7 @@ rounded-xl
 font-semibold
 shadow-md
 hover:scale-105
+hover:shadow-2xl
 transition
 "
 >
@@ -2132,7 +2339,30 @@ ${loading ? "opacity-50 cursor-not-allowed" : "hover:scale-105"}
 
 </section>
 {/* MOBILE STICKY BUTTONS */}
-
+{cart.length > 0 && (
+  <a
+    href="#order"
+    className="
+    fixed
+    bottom-24
+    right-5
+    bg-green-700
+    text-white
+    px-5
+    py-3
+    rounded-full
+    shadow-2xl
+    z-50
+    font-bold
+    hover:bg-green-800
+    hover:scale-105
+    transition-all
+    duration-300
+    "
+  >
+    🛒 Order ({cart.reduce((total, item) => total + item.qty, 0)})
+  </a>
+)}
 <div className="fixed bottom-0 left-0 w-full bg-white shadow-2xl p-3 flex justify-around md:hidden z-50">
 
 <a
@@ -2180,7 +2410,7 @@ Reliaf Agrotech Pvt Ltd
 </div>
 
 <p className="mt-6 text-gray-400">
-© 2026 Reliaf Agrotech Pvt Ltd. All Rights Reserved.
+© {new Date().getFullYear()} Reliaf Agrotech Pvt Ltd. All Rights Reserved.
 </p>
 
 </div>
