@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
+import LeadershipPage from "./LeadershipPage";
+import QualityPolicy from "./QualityPolicy";
+import PrivacyPolicy from "./PrivacyPolicy";
 
 export default function ReliafAgrotechWebsite() {
-
-  useEffect(() => {
-    document.title =
-      "Reliaf Agrotech Pvt Ltd | Bio Fertilizers & Agricultural Solutions";
-  }, []);
-
-const [lang,setLang]=useState("en");
 const [cart, setCart] = useState([]);
 const [showAllProducts, setShowAllProducts] = useState(false);
 const [name,setName] = useState("");
@@ -16,6 +12,31 @@ const [village,setVillage] = useState("");
 const [requirement,setRequirement] = useState("");
 const [loading, setLoading] = useState(false);
 const [showMobileMenu, setShowMobileMenu] = useState(false);
+const [currentImage, setCurrentImage] = useState(0);
+const heroImages = [
+  "/hero1.png",
+  "/hero2.png",
+  "/hero3.png",
+  "/hero4.png",
+  "/hero5.png",
+];
+
+const [lang,setLang]=useState("en");
+
+useEffect(() => {
+  document.title =
+    "Reliaf Agrotech Pvt Ltd | Bio Fertilizers & Agricultural Solutions";
+}, []);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentImage((prev) =>
+      (prev + 1) % heroImages.length
+    );
+  }, 5000);
+
+  return () => clearInterval(interval);
+}, [heroImages.length]);
 const translations = {
 
 en:{
@@ -355,7 +376,7 @@ justify-between
 ">
 
 {/* LEFT */}
-<div className="relative flex items-center gap-3">
+<div className="relative flex items-center gap-2 shrink-0">
 <button
   onClick={() => setShowMobileMenu(!showMobileMenu)}
   className="md:hidden text-3xl text-green-700 font-bold"
@@ -366,19 +387,19 @@ justify-between
   src="/logo.png"
   alt="logo"
   className="
-    w-12
-    h-12
+    w-14
+    h-14
     rounded-xl
     object-cover
   "
 />
 
-<div>
-  <h2 className="font-bold text-sm md:text-xl text-green-800">
-    Reliaf Agrotech
-  </h2>
+<div className="min-w-max">
+<h2 className="font-bold text-xl text-green-800 whitespace-nowrap">
+  Reliaf Agrotech
+</h2>
 
-  <p className="text-xs text-gray-500">
+  <p className="text-sm text-gray-500 whitespace-nowrap">
     Trusted By Farmers
   </p>
 </div>
@@ -389,11 +410,13 @@ justify-between
 
 <nav className="
 hidden
-md:flex
+lg:flex
 items-center
-gap-8
+gap-5
 font-semibold
 text-gray-700
+flex-1
+justify-center
 ">
 
 <a href="#products" className="hover:text-green-700 transition">
@@ -416,8 +439,17 @@ Licenses
 >
   Leadership
 </a>
-<a href="#quality" className="hover:text-green-700 transition">
+<a
+  href="/quality-policy"
+  className="hover:text-green-700 transition"
+>
   Quality Policy
+</a>
+<a
+href="/privacy-policy"
+  className="hover:text-green-700 transition"
+>
+  Privacy Policy
 </a>
 <a href="#careers" className="hover:text-green-700 transition">
   Careers
@@ -520,11 +552,18 @@ text-sm
     </a>
 
     <a
-      href="#quality"
+      href="/quality-policy"
       onClick={() => setShowMobileMenu(false)}
       className="block p-4 border-b"
     >
       Quality Policy
+    </a>
+    <a
+      href="/privacy-policy"
+      onClick={() => setShowMobileMenu(false)}
+      className="block p-4 border-b"
+    >
+      Privacy Policy
     </a>
 
     <a
@@ -550,9 +589,40 @@ text-sm
 
 {/* HERO */}
 
-<section className="bg-gradient-to-br from-green-800 via-green-700 to-green-500 text-white px-5 py-8 md:py-16 overflow-hidden">
+<section
+  className="
+  relative
+  min-h-screen
+  flex
+  items-center
+  bg-fixed
+  overflow-hidden
+  text-white
+  px-5
+  py-8
+  md:py-16
+  "
+>
 
-<div className="max-w-7xl mx-auto">
+<div
+  className="absolute inset-0 hero-bg"
+  style={{
+    backgroundImage: `
+      linear-gradient(
+        rgba(0,80,30,0.65),
+        rgba(0,80,30,0.65)
+      ),
+      url(${heroImages[currentImage]})
+    `,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+  }}
+></div>
+
+<div className="relative z-10 max-w-7xl mx-auto">
+
+
 
 {/* TOP BAR */}
 
@@ -560,7 +630,7 @@ text-sm
 
 {/* LOGO + TITLE */}
 
-<div className="flex items-center gap-4">
+<div className="hidden md:flex items-center gap-4">
 
 <div className="bg-white p-2 rounded-2xl shadow-2xl flex items-center justify-center w-20 h-20 md:w-28 md:h-28 shrink-0">
 
@@ -592,23 +662,43 @@ className="w-full h-full object-contain"
 
 {/* HERO CONTENT */}
 
-<div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mt-12">
+<div className="max-w-4xl mx-auto text-center mt-12">
 
 {/* LEFT SIDE */}
 
 <div>
 
-<h1 className="text-5xl md:text-7xl font-extrabold leading-tight text-center md:text-left">
+<h1
+  className="
+  text-5xl
+  md:text-7xl
+  font-extrabold
+  leading-tight
+  text-center
+  text-white
+  drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]
+  "
+>
+  Reliaf Agrotech
 
-Reliaf Agrotech
-
-<span className="block text-green-200">
-Pvt Ltd
-</span>
-
+  <span className="block text-green-200">
+    Pvt Ltd
+  </span>
 </h1>
 
-<p className="text-lg md:text-2xl mt-6 leading-relaxed text-center md:text-left text-green-50">
+<p
+  className="
+  text-lg
+  md:text-2xl
+  mt-6
+  leading-relaxed
+  text-center
+  text-white
+  max-w-3xl
+  mx-auto
+  drop-shadow-lg
+  "
+>
 
 {t.desc}
 
@@ -667,6 +757,16 @@ Pvt Ltd
     text-center
     "
   >
+  <a
+  href="/quality-policy"
+  className="hover:text-green-700 transition"
+> 
+<a
+href="/privacy-policy"
+  className="hover:text-green-700 transition"
+></a>
+</a>
+
     Meet Our Leadership Team
   </a>
 
@@ -674,32 +774,7 @@ Pvt Ltd
 </div> 
 {/* RIGHT SIDE IMAGE */}
 
-<div className="flex justify-center">
 
-<div className="
-bg-white/10
-backdrop-blur-lg
-border border-white/20
-rounded-[30px]
-p-3
-shadow-2xl
-w-full
-max-w-[650px]
-">
-
-<img
-src="/brand-image.png"
-alt="Reliaf Agrotech"
-className="
-w-full
-rounded-[25px]
-object-cover
-"
-/>
-
-</div>
-
-</div>
 
 </div>
 
@@ -1080,7 +1155,7 @@ grid
 grid-cols-1
 sm:grid-cols-2
 lg:grid-cols-3
-gap-8
+gap-6
 ">
 
 {[
@@ -1188,33 +1263,7 @@ U20210PN2025PTC241544
 </div>
 
 </section>
-{/* QUALITY POLICY */}
 
-<section id="quality" className="py-20 bg-white">
-
-  <div className="max-w-6xl mx-auto px-6">
-
-    <h2 className="text-4xl font-bold text-center text-green-700 mb-8">
-      Quality Policy
-    </h2>
-
-    <div className="bg-green-50 p-8 rounded-3xl shadow-xl border border-green-100">
-
-      <p className="text-lg text-gray-700 leading-8">
-        Reliaf Agrotech Pvt Ltd is committed to delivering
-        high-quality Bio-Fertilizers, Bio-Stimulants and
-        Agricultural Solutions. We maintain strict quality
-        control standards, use premium raw materials and
-        continuously improve our products to maximize
-        farmer satisfaction and sustainable agriculture.
-      </p>
-
-    </div>
-
-  </div>
-
-
-</section>
 
 <section id="careers" className="py-20 bg-green-50">
   <div className="max-w-4xl mx-auto px-6">
@@ -1320,7 +1369,7 @@ mx-auto
 grid
 grid-cols-1
 lg:grid-cols-2
-gap-8
+gap-6
 items-start
 ">
 
