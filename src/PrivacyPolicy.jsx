@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-export default function QualityPolicy() {
+export default function PrivacyPolicy() {
   useEffect(() => {
     AOS.init();
   }, []);
@@ -42,7 +42,7 @@ export default function QualityPolicy() {
         <div className="max-w-7xl mx-auto px-6 text-center">
 
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Quality Policy
+            Privacy Policy
           </h1>
 
           <p className="text-xl max-w-4xl mx-auto leading-8">
@@ -305,39 +305,14 @@ export default function QualityPolicy() {
 
 </section>
 
-      {/* Contact */}
-
-      <section className="py-20 bg-green-700 text-white">
-
-        <div className="max-w-5xl mx-auto px-6 text-center">
-
-          <h2 className="text-4xl font-bold mb-6">
-            Contact Us
-          </h2>
-
-          <p className="text-xl leading-8">
-            For questions regarding this Privacy Policy,
-            please contact Reliaf Agrotech Pvt Ltd.
-          </p>
-
-          <div className="mt-8 space-y-2">
-            <p>📞 8793701270</p>
-            <p>🌐 www.reliafagrotech.com</p>
-            <p>📍 Maharashtra, India</p>
-          </div>
-
-        </div>
-
-      </section>
-
-      <section className="py-20 bg-white">
+<section className="py-20 bg-white">
 
   <div className="max-w-5xl mx-auto">
 
     <div className="bg-green-700 text-white rounded-3xl p-10 text-center">
 
       <img
-        src="/director1.png"
+        src="/director2.png"
         alt="Director"
         className="w-32 h-32 rounded-full mx-auto mb-6 object-cover border-4 border-white"
       />
@@ -368,6 +343,12 @@ export default function QualityPolicy() {
         <p className="text-gray-400 mt-2">
           Empowering Farmers Through Innovation
         </p>
+        <div className="mt-4 space-y-2">
+          <p>📍 Maharashtra, India</p>
+		      <p>📞 7774893247</p>
+		      <p>📞 9075330820</p>
+          <p>🌐 www.reliafagrotech.com</p>
+        </div>
 
       </footer>
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import LeadershipPage from "./LeadershipPage";
-import QualityPolicy from "./QualityPolicy";
+
 import PrivacyPolicy from "./PrivacyPolicy";
 
 export default function ReliafAgrotechWebsite() {
@@ -12,6 +12,7 @@ const [village,setVillage] = useState("");
 const [requirement,setRequirement] = useState("");
 const [loading, setLoading] = useState(false);
 const [showMobileMenu, setShowMobileMenu] = useState(false);
+const [qualityOpen, setQualityOpen] = useState(false);
 const [currentImage, setCurrentImage] = useState(0);
 const heroImages = [
   "/hero1.png",
@@ -423,27 +424,54 @@ justify-center
 Products
 </a>
 
-<a href="#certificate" className="hover:text-green-700 transition">
-Certificate
-</a>
-
-<a href="#results" className="hover:text-green-700 transition">
-Results
-</a>
-<a href="#licenses" className="hover:text-green-700 transition">
-Licenses
-</a>
 <a
   href="/leadership"
   className="hover:text-green-700 transition"
 >
   Leadership
 </a>
-<a
-  href="/quality-policy"
-  className="hover:text-green-700 transition"
->
-  Quality Policy
+<div className="relative group">
+  <button className="hover:text-green-600 font-medium">
+    Quality ▼
+  </button>
+
+  <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+    
+    <a
+      href="/quality/product-quality"
+      className="block px-4 py-3 hover:bg-green-50 border-b"
+    >
+      Product Quality
+    </a>
+
+    <a
+      href="/quality/manufacturing"
+      className="block px-4 py-3 hover:bg-green-50 border-b"
+    >
+      Manufacturing Quality Check
+    </a>
+
+    <a
+      href="/quality/farmer-results"
+      className="block px-4 py-3 hover:bg-green-50 border-b"
+    >
+      Farmer Results
+    </a>
+
+    <a
+      href="/quality/certifications"
+      className="block px-4 py-3 hover:bg-green-50"
+    >
+      Quality Certifications
+    </a>
+
+  </div>
+</div>
+<a href="/careers" className="hover:text-green-700 transition">
+  Careers
+</a>
+<a href="#contact" className="hover:text-green-700 transition">
+Contact
 </a>
 <a
 href="/privacy-policy"
@@ -451,12 +479,7 @@ href="/privacy-policy"
 >
   Privacy Policy
 </a>
-<a href="#careers" className="hover:text-green-700 transition">
-  Careers
-</a>
-<a href="#contact" className="hover:text-green-700 transition">
-Contact
-</a>
+
 
 </nav>
 
@@ -520,14 +543,6 @@ text-sm
   Products
 </a>
 
-        <a
-      href="#certificate"
-      onClick={() => setShowMobileMenu(false)}
-      className="block p-4 border-b"
-    >
-      Certificate
-    </a>
-
     <a
       href="#results"
       onClick={() => setShowMobileMenu(false)}
@@ -537,37 +552,58 @@ text-sm
     </a>
 
     <a
-      href="#licenses"
-      onClick={() => setShowMobileMenu(false)}
-      className="block p-4 border-b"
-    >
-      Licenses
-    </a>
-    <a
         href="/leadership"
         onClick={() => setShowMobileMenu(false)}
         className="block p-4 border-b"
       >
         Leadership
     </a>
+<div className="border-b">
+  <button
+    onClick={() => setQualityOpen(!qualityOpen)}
+    className="w-full flex justify-between items-center py-4 text-green-600 font-semibold"
+  >
+    Quality
+    <span>{qualityOpen ? "▲" : "▼"}</span>
+  </button>
 
-    <a
-      href="/quality-policy"
-      onClick={() => setShowMobileMenu(false)}
-      className="block p-4 border-b"
-    >
-      Quality Policy
-    </a>
-    <a
-      href="/privacy-policy"
-      onClick={() => setShowMobileMenu(false)}
-      className="block p-4 border-b"
-    >
-      Privacy Policy
-    </a>
+  {qualityOpen && (
+    <div className="pl-4 pb-3 bg-gray-50">
 
+      <a
+        href="/quality/product-quality"
+        className="block py-2 text-gray-700"
+      >
+        Product Quality
+      </a>
+
+      <a
+        href="/quality/manufacturing"
+        className="block py-2 text-gray-700"
+      >
+        Manufacturing Process
+      </a>
+
+      <a
+        href="/quality/farmer-results"
+        className="block py-2 text-gray-700"
+      >
+        Farmer Results
+      </a>
+
+      <a
+        href="/quality/certifications"
+        className="block py-2 text-gray-700"
+      >
+        Quality Certifications
+      </a>
+
+
+    </div>
+  )}
+</div>
     <a
-      href="#careers"
+      href="/careers"
       onClick={() => setShowMobileMenu(false)}
       className="block p-4 border-b"
     >
@@ -581,7 +617,13 @@ text-sm
     >
       Contact
     </a>
-
+    <a
+      href="/privacy-policy"
+      onClick={() => setShowMobileMenu(false)}
+      className="block p-4 border-b"
+    >
+      Privacy Policy
+    </a>
 
   </div>
 )}
@@ -1033,331 +1075,6 @@ Inquiry
 </section>
 
 
-{/* ISO Certificate Section */}
-<section id="certificate" className="py-16 bg-green-50">
-
-<div className="max-w-6xl mx-auto px-6 text-center">
-
-<h2 className="text-4xl font-bold text-green-700 mb-4">
-🏅 ISO Certification
-</h2>
-
-<p className="text-gray-600 mb-10">
-Reliaf Agrotech Pvt Ltd follows certified quality standards.
-</p>
-
-<div className="bg-white p-4 md:p-6 rounded-3xl shadow-2xl inline-block">
-
-<img
-  src="/ISO.png"
-  alt="ISO Certificate"
-  className="
-    w-full
-    max-w-3xl
-    rounded-xl
-    mx-auto
-  "
-/>
-
-</div>
-
-</div>
-
-</section>
-{/* Research & Quality Section */}
-
-<section className="py-20 bg-gray-50">
-
-<div className="max-w-7xl mx-auto px-6">
-
-<h2 className="text-3xl md:text-5xl font-bold text-center text-green-700 mb-4">
-Research • Quality • Farm Visits
-</h2>
-
-<p className="text-center text-gray-600 mb-12">
-Scientific testing, farmer support and certified quality products.
-</p>
-
-<div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-
-<img
-src="/research-quality.png"
-alt="Reliaf Research & Farm Visit"
-className="w-full"
-/>
-
-</div>
-
-<div className="grid md:grid-cols-4 gap-6 mt-10">
-
-<div className="bg-green-100 p-6 rounded-2xl text-center">
-<h3 className="text-3xl font-bold text-green-700">5000+</h3>
-<p className="text-center">
-Happy Farmers
-</p>
-</div>
-
-<div className="bg-green-100 p-6 rounded-2xl text-center">
-<h3 className="text-3xl font-bold text-green-700">50+</h3>
-<p className="text-center">Quality Products</p>
-</div>
-
-<div className="bg-green-100 p-6 rounded-2xl text-center">
-<h3 className="text-3xl font-bold text-green-700">10+</h3>
-<p className="text-center">Districts Covered</p>
-</div>
-
-<div className="bg-green-100 p-6 rounded-2xl text-center">
-<h3 className="text-3xl font-bold text-green-700">98%</h3>
-<p className="text-center">Farmer Satisfaction</p>
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-{/* FARMER RESULTS */}
-
-<section
-id="results"
-className="py-20 bg-white"
->
-
-<div className="max-w-7xl mx-auto px-6">
-
-<h2 className="
-text-3xl
-md:text-5xl
-font-bold
-text-center
-text-green-700
-mb-4
-">
-
-Farmer Results
-
-</h2>
-
-<p className="
-text-center
-text-gray-600
-mb-12
-">
-
-Real field performance and farmer success stories
-
-</p>
-
-<div className="
-grid
-grid-cols-1
-sm:grid-cols-2
-lg:grid-cols-3
-gap-6
-">
-
-{[
-"result1.png",
-"result2.png",
-"result3.png",
-"result4.png",
-"result5.png",
-"result6.png"
-].map((img,index)=>(
-
-<div
-key={index}
-className="
-group
-overflow-hidden
-rounded-3xl
-shadow-xl
-bg-white
-hover:shadow-2xl
-transition
-"
->
-
-<img
-src={img}
-alt="Farmer Result"
-className="
-w-full
-h-[320px]
-object-cover
-group-hover:scale-110
-transition
-duration-500
-"
-/>
-
-</div>
-
-))}
-
-</div>
-
-</div>
-</section>
-
-{/* LICENSES & REGISTRATIONS */}
-
-<section id="licenses" className="py-20 bg-gradient-to-b from-green-50 to-white">
-
-<div className="max-w-7xl mx-auto px-6">
-
-<div className="text-center mb-12">
-
-<h2 className="text-4xl md:text-5xl font-bold text-green-700">
-Licenses & Registrations
-</h2>
-
-<p className="text-gray-600 mt-4">
-Certified and Registered Agricultural Solutions Provider
-</p>
-
-</div>
-
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-<div className="bg-white p-6 rounded-3xl shadow-xl border border-green-100">
-<h3 className="text-xl font-bold text-green-700 mb-3">
-GST Registration
-</h3>
-<p className="text-gray-700 break-all">
-GSTIN: 27AAOCR6086N1ZE
-</p>
-</div>
-
-<div className="bg-white p-6 rounded-3xl shadow-xl border border-green-100">
-<h3 className="text-xl font-bold text-green-700 mb-3">
-Bio-Fertilizer License
-</h3>
-<p className="text-gray-700 break-all">
-LCFWD2025120498
-</p>
-</div>
-
-<div className="bg-white p-6 rounded-3xl shadow-xl border border-green-100">
-<h3 className="text-xl font-bold text-green-700 mb-3">
-Bio-Stimulant License
-</h3>
-<p className="text-gray-700 break-all">
-LCBWD1220250148
-</p>
-</div>
-
-<div className="bg-white p-6 rounded-3xl shadow-xl border border-green-100">
-<h3 className="text-xl font-bold text-green-700 mb-3">
-CIN Number
-</h3>
-<p className="text-gray-700 break-all">
-U20210PN2025PTC241544
-</p>
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section id="careers" className="py-20 bg-green-50">
-  <div className="max-w-4xl mx-auto px-6">
-
-    <h2 className="text-4xl font-bold text-center text-green-700 mb-4">
-      Careers at Reliaf Agrotech
-    </h2>
-
-    <p className="text-center text-gray-600 mb-10">
-      Join Reliaf Agrotech Pvt Ltd and build your career in agricultural innovation, sales, marketing and farmer development.
-    </p>
-
-<form
-  action="https://formsubmit.co/reliafagrotech@gmail.com"
-  method="POST"
-  encType="multipart/form-data"
-  className="bg-white p-8 rounded-3xl shadow-xl space-y-5"
->
-  <input
-  type="hidden"
-  name="_subject"
-  value="New Career Application - Reliaf Agrotech"
-/>
-
-<input
-  type="hidden"
-  name="_captcha"
-  value="false"
-/>
-<input
-  type="hidden"
-  name="_next"
-  value="https://reliafagrotech.com/thank-you"
-/>
-     <input
-      type="text"
-      name="full_name"
-      placeholder="Full Name"
-      required
-      className="w-full border p-4 rounded-xl"
-     />
-
-      <input
-        type="tel"
-        name="mobile_number"
-        placeholder="Mobile Number"
-        required
-        className="w-full border p-4 rounded-xl"
-      />
-
-      <input
-        type="email"
-        name="email"
-        placeholder="Email Address"
-        required
-        className="w-full border p-4 rounded-xl"
-      />
-
-      <select
-        name="position"
-        className="w-full border p-4 rounded-xl"
-        required
-      >
-        <option value="">Select Position</option>
-        <option>Sales Officer</option>
-        <option>Agriculture Officer</option>
-        <option>Marketing Executive</option>
-        <option>Area Sales Manager</option>
-      </select>
-
-      <input
-        type="text"
-        name="experience"
-        placeholder="Experience"
-        className="w-full border p-4 rounded-xl"
-      />
-
-      <input
-        type="file"
-        name="resume"
-        accept=".pdf"
-        className="w-full border p-4 rounded-xl"
-      />
-
-      <button
-        type="submit"
-        className="w-full bg-green-700 text-white py-4 rounded-xl font-bold"
-      >
-        Apply Now
-      </button>
-    </form>
-
-  </div>
-</section>
 
 {/* CONTACT */}
 

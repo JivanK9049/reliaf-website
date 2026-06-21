@@ -482,6 +482,13 @@ Business Strategy
   <p className="text-gray-400 mt-2">
     Empowering Farmers Through Innovation
   </p>
+          <div className="mt-4 space-y-2">
+          <p>📍 Maharashtra, India</p>
+          <p>📞 8793701270</p>
+		      <p>📞 7774893247</p>
+		      <p>📞 9075330820</p>
+          <p>🌐 www.reliafagrotech.com</p>
+        </div>
 </footer>
 
 </div>
