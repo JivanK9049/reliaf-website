@@ -277,6 +277,7 @@ qty: 1
 
 };
 const handleSubmit = async (e) => {
+
   e.preventDefault();
   setLoading(true);
 
@@ -286,65 +287,65 @@ const handleSubmit = async (e) => {
     return;
   }
 
+  if (name.trim().length < 3) {
+    alert("Please enter valid name");
+    setLoading(false);
+    return;
+  }
+
+  if (!/^[0-9]{10}$/.test(mobile)) {
+    alert("Please enter valid mobile number");
+    setLoading(false);
+    return;
+  }
+
+  const order = {
+    secret: "RELIAF123",
+    name,
+    mobile,
+    village,
+    product: cart.map(item =>
+      `${item.title} (${item.qty})`
+    ).join(", "),
+    requirement
+  };
+
   try {
 
-    const { error } = await supabase
-      .from("orders")
-      .insert([
-        {
-          customer_name: name,
-          mobile: mobile,
-          village: village,
-
-          product_name: cart
-            .map(item => `${item.title} (${item.qty})`)
-            .join(", "),
-
-          quantity: cart.reduce(
-            (total, item) => total + item.qty,
-            0
-          ),
-
-          amount: cart.reduce(
-            (total, item) =>
-              total + (item.price * item.qty),
-            0
-          ),
-
-          requirement: requirement,
-
-          payment_status: "Pending"
-        }
-      ]);
-
-    if (error) {
-  console.log(error);
-  throw error;
-}
-
-    alert(
-      "Thank You! Your order has been submitted successfully."
+    await fetch(
+      "https://script.google.com/macros/s/AKfycbwexT6eHm8_9tsOZ-2b7hH2y8GNNr4d8RxhgzVmfcZ_9-jUbTLhTZ9f2Aby7EAejMxoGA/exec",
+      {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(order)
+      }
     );
+
+    alert("Thank You! Your order has been received successfully. Our team will contact you shortly.");
+
+    window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+    });
 
     setName("");
     setMobile("");
     setVillage("");
     setRequirement("");
     setCart([]);
+    setLoading(false);
 
   } catch (err) {
 
-  console.error("Supabase Error:", err);
-
-  alert(
-    JSON.stringify(err.message || err)
-  );
-
-} finally {
-
+    console.error(err);
     setLoading(false);
+    alert("Failed to submit order");
 
   }
+
 };
 
 

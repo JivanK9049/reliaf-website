@@ -12,9 +12,7 @@ import QualityCertifications from "./pages/QualityCertifications";
 import LabTesting from "./pages/LabTesting";
 import PrivacyPolicy from "./PrivacyPolicy";
 import Careers from "./pages/Careers";
-import AdminOrders from "./AdminOrders";
-import AdminLogin from "./AdminLogin";
-import ProtectedRoute from "./ProtectedRoute";
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
@@ -28,9 +26,6 @@ createRoot(document.getElementById("root")).render(
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/leadership" element={<LeadershipPage />} />
         <Route path="/careers" element={<Careers />} />
-        <Route path="/admin/reliaf-dashboard" element={<ProtectedRoute><AdminOrders /></ProtectedRoute>} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        
       </Routes>
     </BrowserRouter>
   </StrictMode>
