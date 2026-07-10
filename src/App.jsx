@@ -463,12 +463,17 @@ Products
     >
       Quality Certifications
     </a>
+    
 
   </div>
 </div>
 <a href="/careers" className="hover:text-green-700 transition">
   Careers
 </a>
+<a href="/dealership" className="hover:text-green-700 transition">
+  Dealership
+</a>
+
 <a href="#contact" className="hover:text-green-700 transition">
 Contact
 </a>
@@ -615,6 +620,13 @@ text-sm
       className="block p-4"
     >
       Contact
+    </a>
+    <a
+      href="/dealership"
+      onClick={() => setShowMobileMenu(false)}
+      className="block p-4 border-b"
+    >
+      Dealership
     </a>
     <a
       href="/privacy-policy"

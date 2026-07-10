@@ -15,6 +15,7 @@ import Careers from "./pages/Careers";
 import AdminOrders from "./AdminOrders";
 import AdminLogin from "./AdminLogin";
 import ProtectedRoute from "./ProtectedRoute";
+import Dealership from "./pages/Dealership";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
@@ -30,6 +31,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/careers" element={<Careers />} />
         <Route path="/admin/reliaf-dashboard" element={<ProtectedRoute><AdminOrders /></ProtectedRoute>} />
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/dealership" element={<Dealership />} />
         
       </Routes>
     </BrowserRouter>
