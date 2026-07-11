@@ -241,6 +241,13 @@ const visibleProducts =
   showAllProducts
     ? products
     : products.slice(0, 8);
+const productSlug = (title) => ({
+  "Reliaf P+": "reliaf-p-plus",
+  "Reliaf K+": "reliaf-k-plus",
+  "Reliaf N+": "reliaf-n-plus",
+  "Reliaf Z+": "reliaf-z-plus",
+  "Humi boost": "humi-boost",
+}[title] || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""));
 const addToCart = (item) => {
 
 setCart((prevCart) => {
@@ -914,7 +921,7 @@ text-green-800
 text-center
 leading-tight
 ">
-{item.title}
+<a href={`/products/${productSlug(item.title)}`} className="transition hover:text-green-600">{item.title}</a>
 </h3>
 
 <p className="
