@@ -8,6 +8,7 @@ const [name,setName] = useState("");
 const [mobile,setMobile] = useState("");
 const [village,setVillage] = useState("");
 const [requirement,setRequirement] = useState("");
+const [paymentMethod, setPaymentMethod] = useState("Pay after confirmation");
 const [loading, setLoading] = useState(false);
 const [showMobileMenu, setShowMobileMenu] = useState(false);
 const [qualityOpen, setQualityOpen] = useState(false);
@@ -303,13 +304,12 @@ const handleSubmit = async (e) => {
             0
           ),
 
-          amount: cart.reduce(
-            (total, item) =>
-              total + (item.price * item.qty),
-            0
-          ),
+          // Product prices are confirmed by the sales team, so no amount is charged online.
+          amount: 0,
 
-          requirement: requirement,
+          requirement: [requirement, `Preferred payment method: ${paymentMethod}`]
+            .filter(Boolean)
+            .join(" | "),
 
           payment_status: "Pending"
         }
@@ -328,6 +328,7 @@ const handleSubmit = async (e) => {
     setMobile("");
     setVillage("");
     setRequirement("");
+    setPaymentMethod("Pay after confirmation");
     setCart([]);
 
   } catch (err) {
@@ -479,7 +480,7 @@ Products
   Dealership
 </a>
 
-<a href="#contact" className="hover:text-green-700 transition">
+<a href="/contact" className="hover:text-green-700 transition">
 Contact
 </a>
 <a
@@ -619,7 +620,7 @@ text-sm
     </a>
 
     <a
-      href="#contact"
+      href="/contact"
       onClick={() => setShowMobileMenu(false)}
       className="block p-4"
     >
@@ -783,7 +784,7 @@ className="w-full h-full object-contain"
   </a>
 
   <a
-    href="#contact"
+    href="/contact"
     className="
     border-2
     border-white
@@ -842,22 +843,27 @@ href="/privacy-policy"
 
 {/* PRODUCTS */}
 
-<section id="products" className="py-20 px-6 bg-white">
+<section id="products" className="product-showcase px-4 py-14 sm:px-6 sm:py-20 bg-white">
 
-<h2 className="text-center text-3xl md:text-5xl text-green-700 font-bold mb-12">
-Products
-</h2>
+<div className="mx-auto mb-12 max-w-3xl text-center" data-aos="fade-up">
+  <p className="font-bold tracking-[0.2em] text-green-700">RELIAF SOLUTIONS</p>
+  <h2 className="mt-3 text-3xl font-black text-slate-800 md:text-5xl">Products made for healthier crops</h2>
+  <p className="mt-4 text-lg leading-8 text-slate-600">Explore trusted crop nutrition and biological solutions, then add the products you need to your enquiry.</p>
+</div>
 
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
 
 {visibleProducts.map((item,index)=>(
 
 <div
 key={index}
+data-aos="fade-up"
+data-aos-delay={(index % 4) * 75}
 className="
+product-card
 group
 bg-white
-rounded-[30px]
+rounded-3xl
 overflow-hidden
 shadow-lg
 hover:shadow-2xl
@@ -877,17 +883,20 @@ p-4
 flex
 justify-center
 items-center
-h-[250px] md:h-[380px]
+h-[220px] sm:h-[280px] md:h-[380px]
 ">
 
 <img
   src={item.image}
   alt={item.title}
+  loading="lazy"
+  decoding="async"
   className="
   max-h-full
   max-w-full
   object-contain
   rounded-xl
+  product-image
   "
 />
 
@@ -895,35 +904,32 @@ h-[250px] md:h-[380px]
 
 {/* PRODUCT CONTENT */}
 
-<div className="p-5 flex flex-col flex-1">
+<div className="p-5 sm:p-6">
 
 <h3 className="
-text-2xl
+text-xl
+sm:text-2xl
 font-bold
 text-green-800
 text-center
 leading-tight
-min-h-[70px]
-flex
-items-center
-justify-center
 ">
 {item.title}
 </h3>
 
 <p className="
+product-description
 text-gray-600
 text-center
 mt-3
-leading-relaxed
-flex-1
+leading-7
 ">
 {item.desc}
 </p>
 
 {/* BUTTONS */}
 
-<div className="flex gap-3 mt-6">
+<div className="flex gap-2 sm:gap-3 mt-6">
 
 {cart.find((p)=>p.title===item.title) ? (
 
@@ -958,9 +964,9 @@ p.title===item.title
 
 }
 className="
-px-4
-py-3
-text-2xl
+px-5
+min-h-12
+text-xl
 font-bold
 "
 >
@@ -998,8 +1004,8 @@ p.title===item.title
 
 }
 className="
-px-4
-py-3
+px-5
+min-h-12
 text-2xl
 font-bold
 "
@@ -1017,16 +1023,13 @@ font-bold
 onClick={() => addToCart(item)}
 className="
 flex-1
-bg-white
-border-2
-border-green-600
-text-green-600
+bg-green-700
+text-white
 font-bold
+min-h-12
 py-3
 rounded-xl
-hover:bg-green-600
-hover:text-white
-transition
+button-lift
 "
 >
 
@@ -1041,11 +1044,13 @@ href="https://wa.me/918793701270"
 target="_blank"
 rel="noreferrer"
 className="
-px-5
+min-w-[96px]
+px-4
 border-2
 border-green-700
 text-green-700
 text-center
+min-h-12
 py-3
 rounded-xl
 font-semibold
@@ -1069,7 +1074,7 @@ Inquiry
 ))}
 </div>
 
-<div className="text-center mt-10">
+<div className="text-center mt-10" data-aos="fade-up">
   <button
     onClick={() => setShowAllProducts(!showAllProducts)}
     className="
@@ -1077,7 +1082,7 @@ Inquiry
       text-white
       px-6
       py-3
-      rounded-xl
+      rounded-xl button-lift
       font-semibold
     "
   >
@@ -1093,7 +1098,7 @@ Inquiry
 
 {/* CONTACT */}
 
-<section id="contact" className="py-20 px-6">
+<section id="contact" className="hidden" aria-hidden="true">
 
 <div className="
 max-w-7xl
@@ -1101,14 +1106,15 @@ mx-auto
 grid
 grid-cols-1
 lg:grid-cols-2
-gap-6
+gap-5
 items-start
 ">
 
 <div className="
+contact-panel
 bg-white
-p-6
-md:p-8
+p-5
+sm:p-8
 rounded-3xl
 shadow-xl
 w-full
@@ -1127,15 +1133,15 @@ text-center
 📍 Office Addresses
 </h2>
 
-<div className="space-y-8">
+<div className="space-y-4">
 
 {/* Pune Office */}
 
 <div className="
-bg-green-50
+bg-green-50/80
 rounded-2xl
 p-5
-text-center
+text-left
 ">
 
 <h3 className="
@@ -1149,7 +1155,7 @@ Pune Office
 
 <p className="
 text-gray-700
-leading-8
+leading-7
 text-base
 sm:text-lg
 break-words
@@ -1171,19 +1177,21 @@ Tal Maval Dist Pune
 
 </p>
 
+<a href="https://www.google.com/maps/search/?api=1&query=Mantra+City+360+Talegaon+Dabhade+Pune+410506" target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-lg border border-green-700 px-4 text-sm font-bold text-green-700 transition hover:bg-green-700 hover:text-white">Open in Maps</a>
+
 </div>
 
 {/* Solapur Office */}
 
 <div className="
-bg-green-50
+bg-green-50/80
 rounded-2xl
 p-5
-text-center
+text-left
 ">
 
 <h3 className="
-text-2xl
+text-xl
 font-bold
 text-gray-800
 mb-4
@@ -1193,7 +1201,7 @@ Solapur Office
 
 <p className="
 text-gray-700
-leading-8
+leading-7
 text-base
 sm:text-lg
 break-words
@@ -1209,19 +1217,21 @@ Tal Madha Dist Solapur
 
 </p>
 
+<a href="https://www.google.com/maps/search/?api=1&query=At+Post+Lahu+Madha+Solapur+413208" target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-lg border border-green-700 px-4 text-sm font-bold text-green-700 transition hover:bg-green-700 hover:text-white">Open in Maps</a>
+
 </div>
 
 {/* Akulgaon Office */}
 
 <div className="
-bg-green-50
+bg-green-50/80
 rounded-2xl
 p-5
-text-center
+text-left
 ">
 
 <h3 className="
-text-2xl
+text-xl
 font-bold
 text-gray-800
 mb-4
@@ -1231,7 +1241,7 @@ Akulgaon Office
 
 <p className="
 text-gray-700
-leading-8
+leading-7
 text-base
 sm:text-lg
 break-words
@@ -1250,6 +1260,8 @@ Tal Madha Dist Solapur
 
 </p>
 
+<a href="https://www.google.com/maps/search/?api=1&query=Akulgaon+Madha+Solapur+413208" target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-lg border border-green-700 px-4 text-sm font-bold text-green-700 transition hover:bg-green-700 hover:text-white">Open in Maps</a>
+
 </div>
 
 </div>
@@ -1267,9 +1279,10 @@ gap-6
 {/* CONTACT CARD */}
 
 <div className="
+contact-panel
 bg-white
-p-6
-md:p-8
+p-5
+sm:p-8
 rounded-3xl
 shadow-xl
 w-full
@@ -1287,7 +1300,7 @@ text-center
 
 <div className="space-y-6">
 
-<div className="text-center">
+<div className="text-left">
 
 <p className="
 text-sm
@@ -1300,19 +1313,15 @@ mb-2
 Mobile Number
 </p>
 
-<div className="
-text-xl
-font-semibold
-text-gray-800
-">
-  <a href="tel:+918793701270">+91 8793701270</a><br />
-  <a href="tel:+917774893247">+91 7774893247</a><br />
-  <a href="tel:+919075330820">+91 9075330820</a>
+<div className="grid gap-2 text-base font-semibold text-gray-800 sm:text-lg">
+  <a className="min-h-11 rounded-lg bg-green-50 px-4 py-3 transition hover:bg-green-100" href="tel:+918793701270">Call +91 8793701270</a>
+  <a className="min-h-11 rounded-lg bg-green-50 px-4 py-3 transition hover:bg-green-100" href="tel:+917774893247">Call +91 7774893247</a>
+  <a className="min-h-11 rounded-lg bg-green-50 px-4 py-3 transition hover:bg-green-100" href="tel:+919075330820">Call +91 9075330820</a>
 </div>
 
 </div>
 
-<div className="text-center">
+<div className="text-left">
 
 <p className="
 text-sm
@@ -1327,7 +1336,7 @@ Email Address
 
 <a
 href="mailto:reliafagrotech@gmail.com"
-className="text-lg font-semibold text-gray-800"
+className="inline-flex min-h-11 items-center break-all rounded-lg bg-green-50 px-4 py-3 text-base font-semibold text-gray-800 transition hover:bg-green-100"
 >
 reliafagrotech@gmail.com
 </a>
@@ -1341,8 +1350,9 @@ reliafagrotech@gmail.com
 {/* WHATSAPP CARD */}
 
 <div className="
+contact-panel
 bg-white
-p-6
+ p-5
 rounded-3xl
 shadow-xl
 ">
@@ -1354,6 +1364,7 @@ rel="noreferrer"
 className="
 bg-green-600
 text-white
+min-h-12
 py-4
 rounded-2xl
 font-bold
@@ -1372,8 +1383,9 @@ shadow-lg
 
 </div>
 <div className="
+contact-panel
 bg-white
-p-6
+p-5
 rounded-3xl
 shadow-xl
 ">
@@ -1607,7 +1619,7 @@ Remove
 
 <section
 id="order"
-className="py-20 px-6 bg-green-50"
+className="bg-green-50 px-4 py-14 sm:px-6 sm:py-20"
 >
 
 <div className="max-w-5xl mx-auto">
@@ -1637,11 +1649,11 @@ className="py-20 px-6 bg-green-50"
 
 
 
-<div className="bg-white p-10 rounded-3xl shadow-xl">
+<div className="order-panel bg-white p-5 sm:p-10 rounded-3xl shadow-xl">
 
 <form
 onSubmit={handleSubmit}
-className="grid grid-cols-1 md:grid-cols-2 gap-6"
+className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6"
 >
 
 <input
@@ -1713,6 +1725,30 @@ cart.map((item,index)=>(
 )}
 
 </div>
+
+
+<fieldset className="payment-methods md:col-span-2">
+  <legend className="font-semibold text-slate-800">Preferred payment method</legend>
+  <p className="mt-1 text-sm text-slate-600">Our team will confirm the order total and payment details before collecting payment.</p>
+  <div className="mt-4 grid gap-3 sm:grid-cols-3">
+    {["UPI payment", "Bank transfer", "Pay after confirmation"].map((method) => (
+      <label key={method} className={`payment-option ${paymentMethod === method ? "payment-option-active" : ""}`}>
+        <input
+          type="radio"
+          name="payment-method"
+          value={method}
+          checked={paymentMethod === method}
+          onChange={(event) => setPaymentMethod(event.target.value)}
+          className="sr-only"
+        />
+        <span className="payment-option-title">{method}</span>
+        <span className="payment-option-copy">
+          {method === "UPI payment" ? "Pay using any UPI app" : method === "Bank transfer" ? "Receive account details from us" : "We will contact you first"}
+        </span>
+      </label>
+    ))}
+  </div>
+</fieldset>
 
 
 

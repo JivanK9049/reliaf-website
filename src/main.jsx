@@ -19,6 +19,7 @@ import AdminOrders from "./AdminOrders";
 import AdminLogin from "./AdminLogin";
 import ProtectedRoute from "./ProtectedRoute";
 import Dealership from "./pages/Dealership";
+import ContactPage from "./pages/ContactPage";
 
 AOS.init({
   duration: 1000,
@@ -42,6 +43,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/admin/reliaf-dashboard" element={<ProtectedRoute><AdminOrders /></ProtectedRoute>} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/dealership" element={<Dealership />} />
+        <Route path="/contact" element={<ContactPage />} />
         
         </Routes>
       </BrowserRouter>
