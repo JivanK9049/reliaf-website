@@ -124,6 +124,17 @@ export default function AdminOrders() {
       district: item.district || "",
       state: item.state || "",
       pincode: item.pincode || "",
+      taluka: item.taluka || "",
+      village_city: item.village_city || "",
+      firm_type: item.firm_type || "",
+      pan_number: item.pan_number || "",
+      gst_number: item.gst_number || "",
+      fertilizer_license: item.fertilizer_license || "",
+      pesticide_license: item.pesticide_license || "",
+      business_type: item.business_type || "",
+      annual_turnover: item.annual_turnover ?? "",
+      sales_target: item.sales_target ?? "",
+      declaration_accepted: Boolean(item.declaration_accepted),
       deposit_amount: item.deposit_amount ?? "",
       experience: item.experience || "",
       message: item.message || "",
@@ -139,6 +150,8 @@ export default function AdminOrders() {
     const payload = isOrder ? editData : {
       ...editData,
       deposit_amount: editData.deposit_amount === "" ? null : Number(editData.deposit_amount),
+      annual_turnover: editData.annual_turnover === "" ? null : Number(editData.annual_turnover),
+      sales_target: editData.sales_target === "" ? null : Number(editData.sales_target),
     };
     const table = isOrder ? "orders" : "dealership_applications";
     const { error: updateError } = await supabase.from(table).update(payload).eq("id", editing.id);
@@ -228,7 +241,7 @@ export default function AdminOrders() {
   const results = (isOrdersTab ? orders : applications).filter((item) => {
     const text = isOrdersTab
       ? `${item.customer_name || ""} ${item.mobile || ""} ${item.village || ""}`
-      : `${item.dealer_name || ""} ${item.firm_name || ""} ${item.mobile || ""}`;
+      : `${item.dealer_name || ""} ${item.firm_name || ""} ${item.mobile || ""} ${item.district || ""} ${item.taluka || ""} ${item.village_city || ""}`;
     return text.toLowerCase().includes(search.toLowerCase());
   });
 

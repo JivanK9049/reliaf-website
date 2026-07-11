@@ -9,9 +9,20 @@ create table if not exists public.dealership_applications (
   district text not null,
   state text not null,
   pincode text not null,
+  taluka text not null,
+  village_city text not null,
   deposit_amount numeric(12, 2),
   experience text,
   message text,
+  firm_type text,
+  pan_number text,
+  gst_number text,
+  fertilizer_license text,
+  pesticide_license text,
+  business_type text,
+  annual_turnover numeric(14, 2),
+  sales_target numeric(14, 2),
+  declaration_accepted boolean not null default false,
   status text not null default 'New',
   created_at timestamptz not null default now()
 );
@@ -19,6 +30,21 @@ create table if not exists public.dealership_applications (
 -- Adds the field for projects where this table was created before deposit_amount existed.
 alter table public.dealership_applications
   add column if not exists deposit_amount numeric(12, 2);
+
+alter table public.dealership_applications
+  add column if not exists taluka text,
+  add column if not exists village_city text;
+
+alter table public.dealership_applications
+  add column if not exists firm_type text,
+  add column if not exists pan_number text,
+  add column if not exists gst_number text,
+  add column if not exists fertilizer_license text,
+  add column if not exists pesticide_license text,
+  add column if not exists business_type text,
+  add column if not exists annual_turnover numeric(14, 2),
+  add column if not exists sales_target numeric(14, 2),
+  add column if not exists declaration_accepted boolean not null default false;
 
 alter table public.dealership_applications enable row level security;
 
