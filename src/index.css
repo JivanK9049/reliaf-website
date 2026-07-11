@@ -1,6 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+.glass-card {
+  backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hover-lift {
+  transition: 0.35s;
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #15803d, #22c55e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes careerPulse {
+  50% { transform: translateY(-14px) rotate(7deg); }
+}
+
+.career-shape { animation: careerPulse 6s ease-in-out infinite; }
 @keyframes zoomBackground {
   0% {
     transform: scale(1);
