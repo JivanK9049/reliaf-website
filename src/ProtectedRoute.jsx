@@ -7,17 +7,17 @@ export default function ProtectedRoute({ children }) {
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
+    async function checkUser() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      setAuthenticated(!!session);
+      setLoading(false);
+    }
+
     checkUser();
   }, []);
-
-  async function checkUser() {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    setAuthenticated(!!session);
-    setLoading(false);
-  }
 
   if (loading) {
     return <div>Checking Login...</div>;

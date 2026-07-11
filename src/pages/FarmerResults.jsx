@@ -48,7 +48,7 @@ export default function FarmerResults() {
         {/* Result Cards */}
         <div className="grid md:grid-cols-2 gap-8 mb-16">
 
-          <div className="bg-white shadow-xl rounded-2xl p-6">
+          <div data-aos="fade-up" className="bg-white shadow-xl rounded-2xl p-6 transition hover:-translate-y-1">
             <h3 className="font-bold text-xl mb-2 text-green-700">
               Root Development
             </h3>
@@ -57,7 +57,7 @@ export default function FarmerResults() {
             </p>
           </div>
 
-          <div className="bg-white shadow-xl rounded-2xl p-6">
+          <div data-aos="fade-up" data-aos-delay="80" className="bg-white shadow-xl rounded-2xl p-6 transition hover:-translate-y-1">
             <h3 className="font-bold text-xl mb-2 text-green-700">
               Yield Improvement
             </h3>
@@ -66,7 +66,7 @@ export default function FarmerResults() {
             </p>
           </div>
 
-          <div className="bg-white shadow-xl rounded-2xl p-6">
+          <div data-aos="fade-up" data-aos-delay="160" className="bg-white shadow-xl rounded-2xl p-6 transition hover:-translate-y-1">
             <h3 className="font-bold text-xl mb-2 text-green-700">
               Soil Health
             </h3>
@@ -75,7 +75,7 @@ export default function FarmerResults() {
             </p>
           </div>
 
-          <div className="bg-white shadow-xl rounded-2xl p-6">
+          <div data-aos="fade-up" data-aos-delay="240" className="bg-white shadow-xl rounded-2xl p-6 transition hover:-translate-y-1">
             <h3 className="font-bold text-xl mb-2 text-green-700">
               Farmer Satisfaction
             </h3>
@@ -96,12 +96,14 @@ export default function FarmerResults() {
           {images.map((img, index) => (
             <div
               key={index}
-              className="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition duration-300"
+              data-aos="fade-up"
+              data-aos-delay={(index % 3) * 75}
+              className="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-2 transition duration-300"
             >
               <img
                 src={img}
                 alt={`Farmer Result ${index + 1}`}
-                className="w-full h-80 object-cover"
+                className="w-full h-80 object-cover" loading="lazy"
               />
 
               <div className="p-5">

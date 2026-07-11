@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
-import LeadershipPage from "./LeadershipPage";
+import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
-import PrivacyPolicy from "./PrivacyPolicy";
 
 export default function ReliafAgrotechWebsite() {
 const [cart, setCart] = useState([]);
@@ -379,7 +377,7 @@ justify-between
 <div className="relative flex items-center gap-2 shrink-0">
 <button
   onClick={() => setShowMobileMenu(!showMobileMenu)}
-  className="md:hidden text-3xl text-green-700 font-bold"
+  className="xl:hidden text-3xl text-green-700 font-bold"
 >
   ☰
 </button>
@@ -410,7 +408,7 @@ justify-between
 
 <nav className="
 hidden
-lg:flex
+xl:flex
 items-center
 gap-5
 font-semibold
@@ -459,9 +457,16 @@ Products
 
     <a
       href="/quality/certifications"
-      className="block px-4 py-3 hover:bg-green-50"
+      className="block px-4 py-3 hover:bg-green-50 border-b"
     >
       Quality Certifications
+    </a>
+
+    <a
+      href="/quality/lab-testing"
+      className="block px-4 py-3 hover:bg-green-50"
+    >
+      Lab Testing
     </a>
     
 
@@ -537,7 +542,7 @@ text-sm
 </div>
 
 {showMobileMenu && (
-  <div className="md:hidden bg-white border-t shadow-lg">
+  <div className="xl:hidden bg-white border-t shadow-lg">
 
 <a
   href="#products"
@@ -546,14 +551,6 @@ text-sm
 >
   Products
 </a>
-
-    <a
-      href="#results"
-      onClick={() => setShowMobileMenu(false)}
-      className="block p-4 border-b"
-    >
-      Results
-    </a>
 
     <a
         href="/leadership"
@@ -600,6 +597,13 @@ text-sm
         className="block py-2 text-gray-700"
       >
         Quality Certifications
+      </a>
+
+      <a
+        href="/quality/lab-testing"
+        className="block py-2 text-gray-700"
+      >
+        Lab Testing
       </a>
 
 

@@ -23,11 +23,11 @@ export default function ManufacturingQuality() {
         </button>
 
         {/* Image 1 */}
-        <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-10">
+        <div data-aos="fade-up" className="bg-white rounded-3xl shadow-xl overflow-hidden mb-10 transition duration-300 hover:shadow-2xl">
           <img
             src="/research-quality.png"
             alt="Research Based Better Results"
-            className="w-full"
+            className="w-full" loading="lazy"
           />
 
           <div className="p-8">
@@ -44,11 +44,11 @@ export default function ManufacturingQuality() {
         </div>
 
         {/* Image 2 */}
-        <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-10">
+        <div data-aos="fade-up" className="bg-white rounded-3xl shadow-xl overflow-hidden mb-10 transition duration-300 hover:shadow-2xl">
           <img
             src="/labtestphoto.png"
             alt="Laboratory Quality Testing"
-            className="w-full"
+            className="w-full" loading="lazy"
           />
 
           <div className="p-8">
@@ -67,28 +67,28 @@ export default function ManufacturingQuality() {
         {/* Quality Cards */}
         <div className="grid md:grid-cols-4 gap-6">
 
-          <div className="bg-white p-6 rounded-2xl shadow-lg text-center">
+          <div data-aos="zoom-in" className="bg-white p-6 rounded-2xl shadow-lg text-center transition hover:-translate-y-2 hover:shadow-xl">
             <h3 className="font-bold text-green-700 mb-2">
               Scientific Research
             </h3>
             <p>Research-driven product development.</p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl shadow-lg text-center">
+          <div data-aos="zoom-in" data-aos-delay="80" className="bg-white p-6 rounded-2xl shadow-lg text-center transition hover:-translate-y-2 hover:shadow-xl">
             <h3 className="font-bold text-green-700 mb-2">
               Advanced Testing
             </h3>
             <p>Comprehensive laboratory validation.</p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl shadow-lg text-center">
+          <div data-aos="zoom-in" data-aos-delay="160" className="bg-white p-6 rounded-2xl shadow-lg text-center transition hover:-translate-y-2 hover:shadow-xl">
             <h3 className="font-bold text-green-700 mb-2">
               Quality Assured
             </h3>
             <p>Strict quality control at every stage.</p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl shadow-lg text-center">
+          <div data-aos="zoom-in" data-aos-delay="240" className="bg-white p-6 rounded-2xl shadow-lg text-center transition hover:-translate-y-2 hover:shadow-xl">
             <h3 className="font-bold text-green-700 mb-2">
               Safe For Crops
             </h3>

@@ -24,12 +24,12 @@ export default function QualityCertifications() {
         </button>
 
         {/* ISO Certificate */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden mb-12">
+        <div data-aos="fade-up" className="bg-white rounded-3xl shadow-2xl overflow-hidden mb-12">
 
           <img
             src="/ISO.png"
             alt="ISO 9001:2015 Certificate"
-            className="w-full"
+            className="w-full" loading="lazy"
           />
 
           <div className="p-8">
@@ -53,7 +53,7 @@ export default function QualityCertifications() {
 
         <div className="grid md:grid-cols-2 gap-8">
 
-          <div className="bg-white p-8 rounded-3xl shadow-xl">
+          <div data-aos="fade-right" className="bg-white p-8 rounded-3xl shadow-xl transition hover:-translate-y-1">
             <h3 className="text-2xl font-bold text-green-700 mb-4">
               Certification Scope
             </h3>
@@ -68,7 +68,7 @@ export default function QualityCertifications() {
             </ul>
           </div>
 
-          <div className="bg-white p-8 rounded-3xl shadow-xl">
+          <div data-aos="fade-left" className="bg-white p-8 rounded-3xl shadow-xl transition hover:-translate-y-1">
             <h3 className="text-2xl font-bold text-green-700 mb-4">
               Quality Commitment
             </h3>
@@ -89,22 +89,22 @@ export default function QualityCertifications() {
 
         <div className="grid md:grid-cols-4 gap-6 mt-12">
 
-          <div className="bg-white p-6 rounded-3xl shadow-xl text-center">
+          <div data-aos="zoom-in" className="bg-white p-6 rounded-3xl shadow-xl text-center">
             <h3 className="text-4xl font-bold text-green-700">ISO</h3>
             <p>9001:2015 Certified</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl shadow-xl text-center">
+          <div data-aos="zoom-in" data-aos-delay="70" className="bg-white p-6 rounded-3xl shadow-xl text-center">
             <h3 className="text-4xl font-bold text-green-700">5000+</h3>
             <p>Farmers Served</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl shadow-xl text-center">
+          <div data-aos="zoom-in" data-aos-delay="140" className="bg-white p-6 rounded-3xl shadow-xl text-center">
             <h3 className="text-4xl font-bold text-green-700">50+</h3>
             <p>Quality Products</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl shadow-xl text-center">
+          <div data-aos="zoom-in" data-aos-delay="210" className="bg-white p-6 rounded-3xl shadow-xl text-center">
             <h3 className="text-4xl font-bold text-green-700">98%</h3>
             <p>Customer Satisfaction</p>
           </div>
