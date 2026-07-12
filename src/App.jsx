@@ -364,6 +364,8 @@ return(
 sticky
 top-0
 z-50
+relative
+overflow-visible
 backdrop-blur-xl
 bg-white/80
 shadow-md
@@ -553,7 +555,7 @@ text-sm
 </div>
 
 {showMobileMenu && (
-  <div className="xl:hidden bg-white border-t shadow-lg">
+  <div className="absolute left-0 right-0 top-full z-[60] border-t border-green-100 bg-white shadow-lg xl:hidden">
 
 <a
   href="#products"
@@ -632,7 +634,7 @@ text-sm
     <a
       href="/contact"
       onClick={() => setShowMobileMenu(false)}
-      className="block p-4"
+      className="block p-4 border-b"
     >
       Contact
     </a>
@@ -642,6 +644,13 @@ text-sm
       className="block p-4 border-b"
     >
       Dealership
+    </a>
+    <a
+      href="/farmer-demo"
+      onClick={() => setShowMobileMenu(false)}
+      className="block p-4 border-b"
+    >
+      Farmer Demo
     </a>
     <a
       href="/privacy-policy"
