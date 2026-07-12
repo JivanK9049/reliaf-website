@@ -486,6 +486,9 @@ Products
 <a href="/dealership" className="hover:text-green-700 transition">
   Dealership
 </a>
+<a href="/farmer-demo" className="hover:text-green-700 transition">
+  Farmer Demo
+</a>
 
 <a href="/contact" className="hover:text-green-700 transition">
 Contact

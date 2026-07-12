@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { jsPDF } from "jspdf";
 import { useNavigate } from "react-router-dom";
 import {
   FaBoxOpen,
@@ -7,8 +8,10 @@ import {
   FaClipboardList,
   FaClock,
   FaEdit,
+  FaDownload,
   FaEnvelope,
   FaFileAlt,
+  FaPrint,
   FaSyncAlt,
   FaStore,
   FaSignOutAlt,
@@ -53,6 +56,7 @@ export default function AdminOrders() {
   const [activeTab, setActiveTab] = useState("orders");
   const [orders, setOrders] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [demos, setDemos] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -63,6 +67,8 @@ export default function AdminOrders() {
   const [contactComposer, setContactComposer] = useState(null);
   const navigate = useNavigate();
   const isOrdersTab = activeTab === "orders";
+  const isDemosTab = activeTab === "demos";
+  const isApplicationsTab = activeTab === "applications";
 
   useEffect(() => {
     let isCurrent = true;
@@ -77,7 +83,7 @@ export default function AdminOrders() {
         return;
       }
 
-      const table = activeTab === "orders" ? "orders" : "dealership_applications";
+      const table = activeTab === "orders" ? "orders" : activeTab === "demos" ? "farmer_demos" : "dealership_applications";
       const { data, error: requestError } = await supabase
         .from(table)
         .select("*")
@@ -86,6 +92,7 @@ export default function AdminOrders() {
       if (!isCurrent) return;
       if (requestError) setError(requestError.message);
       else if (activeTab === "orders") setOrders(data || []);
+      else if (activeTab === "demos") setDemos(data || []);
       else setApplications(data || []);
       setLoading(false);
     };
@@ -100,6 +107,97 @@ export default function AdminOrders() {
     setOrders((current) => current.map((order) => (order.id === id ? { ...order, payment_status: paymentStatus } : order)));
   };
 
+  const downloadDemoPdf = async (demo) => {
+    const pdf = new jsPDF({ unit: "mm", format: "a4" });
+    const line = (label, value) => {
+      const text = `${label}: ${value || "-"}`;
+      const lines = pdf.splitTextToSize(text, 180);
+      pdf.text(lines, 15, y);
+      y += lines.length * 6 + 2;
+    };
+    let y = 48;
+
+    let logoDataUrl = null;
+    try {
+      const logoCandidates = ["/logo.png", "/logo.jpg"];
+      for (const logoUrl of logoCandidates) {
+        const response = await fetch(logoUrl, { cache: "no-store" });
+        if (!response.ok) continue;
+        const logoBlob = await response.blob();
+        logoDataUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(logoBlob);
+        });
+        break;
+      }
+      if (logoDataUrl) {
+        pdf.setFillColor(248, 250, 252);
+        pdf.roundedRect(10, 8, 190, 24, 3, 3, "F");
+        pdf.addImage(logoDataUrl, "PNG", 15, 10, 40, 16);
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(16);
+        pdf.setTextColor(15, 23, 42);
+        pdf.text("Reliaf Agrotech", 60, 17);
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(10);
+        pdf.text("Farmer Demonstration Report", 60, 23);
+        pdf.setTextColor(0, 0, 0);
+      }
+    } catch {
+      // Fall back to the text title if the logo cannot be rendered.
+    }
+
+    pdf.setFontSize(16);
+    pdf.setFont("helvetica", "bold");
+    pdf.text("Farmer Demonstration Report", 15, 40);
+    y = 48;
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(11);
+    line("Farmer name", demo.farmer_name);
+    line("Mobile", demo.mobile);
+    line("Location", [demo.village, demo.taluka, demo.district].filter(Boolean).join(", "));
+    line("Crop", demo.crop_name);
+    line("Demo product", demo.demo_product);
+    line("Application method", demo.application_method);
+    line("Demo date", demo.demo_date);
+    line("Follow-up date", demo.follow_up_date);
+    line("Days after demo", demo.days_after_demo);
+    line("Final observation", demo.final_observation);
+    line("Officer", demo.officer_name);
+    line("Report location", demo.report_location);
+    const addPhoto = async (url, label) => {
+      if (!url || y > 230) return;
+      try {
+        const blob = await fetch(url).then((response) => response.blob());
+        const dataUrl = await new Promise((resolve) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.readAsDataURL(blob); });
+        pdf.setFontSize(12); pdf.text(label, 15, y); y += 4;
+        pdf.addImage(dataUrl, "JPEG", 15, y, 80, 60); y += 68;
+      } catch { line(label, url); }
+    };
+    await addPhoto(demo.before_image_url, "Before demonstration photo");
+    await addPhoto(demo.after_image_url, "After demonstration photo");
+    pdf.save(`farmer-demo-${demo.farmer_name?.replace(/[^a-z0-9]+/gi, "-").toLowerCase() || demo.id}.pdf`);
+  };
+
+  const printDemoReport = (demo) => {
+    const printWindow = window.open("", "_blank", "width=900,height=700");
+    if (!printWindow) {
+      window.alert("Please allow pop-ups to print the farmer demo report.");
+      return;
+    }
+    const location = [demo.village, demo.taluka, demo.district].filter(Boolean).join(", ");
+    const photoMarkup = [
+      demo.before_image_url ? `<div class="photo"><img src="${demo.before_image_url}" alt="Before demonstration" /></div>` : "",
+      demo.after_image_url ? `<div class="photo"><img src="${demo.after_image_url}" alt="After demonstration" /></div>` : "",
+    ].filter(Boolean).join("");
+    printWindow.document.write(`<!DOCTYPE html><html><head><title>Farmer Demo Report</title><style>body{font-family:Arial,sans-serif;padding:24px;color:#0f172a;}h1{font-size:24px;margin-bottom:12px;}p{margin:6px 0;} .brand{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc;margin-bottom:16px;} .brand img{max-width:140px;max-height:48px;} .photos{display:grid;gap:12px;margin-top:16px;} img{max-width:100%;border:1px solid #cbd5e1;border-radius:8px;}</style></head><body><div class="brand"><img src="/logo.png" alt="Reliaf Agrotech" /><div><strong>Reliaf Agrotech</strong><br />Farmer Demonstration Report</div></div><p><strong>Farmer:</strong> ${demo.farmer_name || "-"}</p><p><strong>Mobile:</strong> ${demo.mobile || "-"}</p><p><strong>Location:</strong> ${location || "-"}</p><p><strong>Crop:</strong> ${demo.crop_name || "-"}</p><p><strong>Demo product:</strong> ${demo.demo_product || "-"}</p><p><strong>Application method:</strong> ${demo.application_method || "-"}</p><p><strong>Demo date:</strong> ${demo.demo_date || "-"}</p><p><strong>Follow-up date:</strong> ${demo.follow_up_date || "-"}</p><p><strong>Days after demo:</strong> ${demo.days_after_demo || "-"}</p><p><strong>Officer:</strong> ${demo.officer_name || "-"}</p><p><strong>Report location:</strong> ${demo.report_location || "-"}</p><p><strong>Observation:</strong> ${demo.final_observation || "-"}</p>${photoMarkup ? `<div class="photos">${photoMarkup}</div>` : "<p>No photos uploaded.</p>"}</body></html>`);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => printWindow.print(), 300);
+  };
+
   const updateApplicationStatus = async (id, status) => {
     const { error: updateError } = await supabase.from("dealership_applications").update({ status }).eq("id", id);
     if (updateError) return window.alert(updateError.message);
@@ -108,13 +206,40 @@ export default function AdminOrders() {
 
   const openEdit = (type, item) => {
     setEditing({ type, id: item.id });
-    setEditData(type === "order" ? {
-      customer_name: item.customer_name || "",
-      mobile: item.mobile || "",
-      village: item.village || "",
-      product_name: item.product_name || "",
-      payment_status: item.payment_status || "Pending",
-    } : {
+    if (type === "order") {
+      setEditData({
+        customer_name: item.customer_name || "",
+        mobile: item.mobile || "",
+        village: item.village || "",
+        product_name: item.product_name || "",
+        payment_status: item.payment_status || "Pending",
+      });
+      return;
+    }
+    if (type === "demo") {
+      setEditData({
+        farmer_name: item.farmer_name || "",
+        mobile: item.mobile || "",
+        village: item.village || "",
+        taluka: item.taluka || "",
+        district: item.district || "",
+        crop_name: item.crop_name || "",
+        demo_product: item.demo_product || "",
+        demo_crop_name: item.demo_crop_name || "",
+        demo_area: item.demo_area || "",
+        crop_stage_days: item.crop_stage_days || "",
+        application_method: item.application_method || "Spray",
+        demo_date: item.demo_date || "",
+        follow_up_date: item.follow_up_date || "",
+        days_after_demo: item.days_after_demo || "",
+        final_observation: item.final_observation || "",
+        officer_name: item.officer_name || "",
+        report_location: item.report_location || "",
+        status: item.status || "New",
+      });
+      return;
+    }
+    setEditData({
       dealer_name: item.dealer_name || "",
       firm_name: item.firm_name || "",
       mobile: item.mobile || "",
@@ -147,13 +272,14 @@ export default function AdminOrders() {
     if (!editing) return;
     setSavingEdit(true);
     const isOrder = editing.type === "order";
-    const payload = isOrder ? editData : {
+    const isDemo = editing.type === "demo";
+    const payload = isOrder ? editData : isDemo ? { ...editData } : {
       ...editData,
       deposit_amount: editData.deposit_amount === "" ? null : Number(editData.deposit_amount),
       annual_turnover: editData.annual_turnover === "" ? null : Number(editData.annual_turnover),
       sales_target: editData.sales_target === "" ? null : Number(editData.sales_target),
     };
-    const table = isOrder ? "orders" : "dealership_applications";
+    const table = isOrder ? "orders" : isDemo ? "farmer_demos" : "dealership_applications";
     const { error: updateError } = await supabase.from(table).update(payload).eq("id", editing.id);
     setSavingEdit(false);
 
@@ -163,6 +289,7 @@ export default function AdminOrders() {
     }
 
     if (isOrder) setOrders((current) => current.map((item) => (item.id === editing.id ? { ...item, ...payload } : item)));
+    else if (isDemo) setDemos((current) => current.map((item) => (item.id === editing.id ? { ...item, ...payload } : item)));
     else setApplications((current) => current.map((item) => (item.id === editing.id ? { ...item, ...payload } : item)));
     setEditing(null);
   };
@@ -238,10 +365,17 @@ export default function AdminOrders() {
     return { new: count("New"), contacted: count("Contacted"), approved: count("Approved"), totalDeposit: deposits.reduce((total, amount) => total + amount, 0) };
   }, [applications]);
 
-  const results = (isOrdersTab ? orders : applications).filter((item) => {
+  const demoStats = useMemo(() => {
+    const withPhotos = demos.filter((demo) => demo.before_image_url || demo.after_image_url).length;
+    const withFollowUp = demos.filter((demo) => demo.follow_up_date).length;
+    const withObservation = demos.filter((demo) => demo.final_observation).length;
+    return { total: demos.length, withPhotos, withFollowUp, withObservation };
+  }, [demos]);
+
+  const results = (isOrdersTab ? orders : isDemosTab ? demos : applications).filter((item) => {
     const text = isOrdersTab
       ? `${item.customer_name || ""} ${item.mobile || ""} ${item.village || ""}`
-      : `${item.dealer_name || ""} ${item.firm_name || ""} ${item.mobile || ""} ${item.district || ""} ${item.taluka || ""} ${item.village_city || ""}`;
+      : isDemosTab ? `${item.farmer_name || ""} ${item.mobile || ""} ${item.village || ""} ${item.crop_name || ""} ${item.demo_product || ""}` : `${item.dealer_name || ""} ${item.firm_name || ""} ${item.mobile || ""} ${item.district || ""} ${item.taluka || ""} ${item.village_city || ""}`;
     return text.toLowerCase().includes(search.toLowerCase());
   });
 
@@ -267,12 +401,13 @@ export default function AdminOrders() {
 
         <div className="sticky top-3 z-10 mt-6 flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-sm backdrop-blur">
           <button onClick={() => switchTab("orders")} className={`inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold transition ${isOrdersTab ? "bg-green-700 text-white shadow" : "text-slate-600 hover:bg-green-50"}`}><FaBoxOpen /> Orders <span className={`rounded-full px-2 py-0.5 text-xs ${isOrdersTab ? "bg-white/20" : "bg-slate-100"}`}>{orders.length}</span></button>
-          <button onClick={() => switchTab("applications")} className={`inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold transition ${!isOrdersTab ? "bg-green-700 text-white shadow" : "text-slate-600 hover:bg-green-50"}`}><FaStore /> Dealership applications <span className={`rounded-full px-2 py-0.5 text-xs ${!isOrdersTab ? "bg-white/20" : "bg-slate-100"}`}>{applications.length}</span></button>
+          <button onClick={() => switchTab("applications")} className={`inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold transition ${isApplicationsTab ? "bg-green-700 text-white shadow" : "text-slate-600 hover:bg-green-50"}`}><FaStore /> Dealership applications <span className={`rounded-full px-2 py-0.5 text-xs ${isApplicationsTab ? "bg-white/20" : "bg-slate-100"}`}>{applications.length}</span></button>
+          <button onClick={() => switchTab("demos")} className={`inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold transition ${isDemosTab ? "bg-green-700 text-white shadow" : "text-slate-600 hover:bg-green-50"}`}><FaClipboardList /> Farmer demos <span className={`rounded-full px-2 py-0.5 text-xs ${isDemosTab ? "bg-white/20" : "bg-slate-100"}`}>{demos.length}</span></button>
           <button onClick={() => setRefreshKey((key) => key + 1)} className="ml-auto inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold text-slate-600 hover:bg-slate-100"><FaSyncAlt /> Refresh</button>
         </div>
 
         {error ? (
-          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-700">Could not load {isOrdersTab ? "orders" : "dealership applications"}: {error}</div>
+          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-700">Could not load {isOrdersTab ? "orders" : isDemosTab ? "farmer demo reports" : "dealership applications"}: {error}</div>
         ) : (
           <>
             {isOrdersTab ? (
@@ -293,6 +428,13 @@ export default function AdminOrders() {
                   <div className="rounded-2xl bg-white p-6 shadow-sm"><div className="flex items-center gap-2"><FaUsers className="text-green-700" /><h2 className="font-bold text-slate-900">Customer & product insight</h2></div><p className="mt-4 text-3xl font-extrabold">{orderStats.customers}</p><p className="text-sm text-slate-500">unique customers</p><div className="mt-5 border-t pt-4"><p className="text-xs font-bold uppercase tracking-wider text-slate-400">Top products</p>{orderStats.topProducts.length ? orderStats.topProducts.map(([name, count], index) => <div key={name} className="mt-3 flex items-center justify-between text-sm"><span className="max-w-[75%] truncate"><span className="mr-2 text-green-700">#{index + 1}</span>{name}</span><span className="rounded-full bg-green-50 px-2 py-1 font-semibold text-green-700">{count}</span></div>) : <p className="mt-3 text-sm text-slate-500">No product data yet.</p>}</div></div>
                 </section>
               </>
+            ) : isDemosTab ? (
+              <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <MetricCard label="Total demo reports" value={demoStats.total} detail="All farmer demonstration reports" icon={FaClipboardList} tone="bg-green-100 text-green-700" />
+                <MetricCard label="With photos" value={demoStats.withPhotos} detail="Reports with before/after images" icon={FaFileAlt} tone="bg-blue-100 text-blue-700" />
+                <MetricCard label="Follow-up scheduled" value={demoStats.withFollowUp} detail="Reports with follow-up dates" icon={FaClock} tone="bg-amber-100 text-amber-700" />
+                <MetricCard label="Observations recorded" value={demoStats.withObservation} detail="Reports with final observations" icon={FaCheckCircle} tone="bg-emerald-100 text-emerald-700" />
+              </section>
             ) : (
               <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 <MetricCard label="Total applications" value={applications.length} detail="All dealership requests" icon={FaStore} tone="bg-green-100 text-green-700" />
@@ -303,14 +445,16 @@ export default function AdminOrders() {
             )}
 
             <section className="mt-6 overflow-hidden rounded-2xl bg-white shadow-sm">
-              <div className="border-b border-slate-100 p-5 sm:p-6"><div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-bold text-slate-900">{isOrdersTab ? "Order management" : "Dealership applications"}</h2><p className="mt-1 text-sm text-slate-500">{results.length} result{results.length === 1 ? "" : "s"} shown</p></div><input type="search" placeholder={isOrdersTab ? "Search customer, mobile, or village..." : "Search dealer, firm, or mobile..."} className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-4 focus:ring-green-100 sm:max-w-md" value={search} onChange={(event) => setSearch(event.target.value)} /></div></div>
+              <div className="border-b border-slate-100 p-5 sm:p-6"><div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-bold text-slate-900">{isOrdersTab ? "Order management" : isDemosTab ? "Farmer demo reports" : "Dealership applications"}</h2><p className="mt-1 text-sm text-slate-500">{results.length} result{results.length === 1 ? "" : "s"} shown</p></div><input type="search" placeholder={isOrdersTab ? "Search customer, mobile, or village..." : isDemosTab ? "Search farmer, mobile, crop, or demo product..." : "Search dealer, firm, or mobile..."} className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-4 focus:ring-green-100 sm:max-w-md" value={search} onChange={(event) => setSearch(event.target.value)} /></div></div>
               <div className="overflow-x-auto">
                 {isOrdersTab ? (
                   <table className="w-full min-w-[1140px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-6 py-4">Customer</th><th className="px-6 py-4">Mobile</th><th className="px-6 py-4">Village</th><th className="px-6 py-4">Products</th><th className="px-6 py-4">Status</th><th className="px-6 py-4">Order date</th><th className="px-6 py-4">Actions</th></tr></thead><tbody className="divide-y divide-slate-100">{results.map((order) => <tr key={order.id} className="transition hover:bg-green-50/50"><td className="px-6 py-4 font-semibold text-slate-900">{order.customer_name || "—"}</td><td className="px-6 py-4">{order.mobile || "—"}</td><td className="px-6 py-4">{order.village || "—"}</td><td className="max-w-xs px-6 py-4 leading-6">{order.product_name || "—"}</td><td className="px-6 py-4"><select value={order.payment_status || "Pending"} onChange={(event) => updateOrderStatus(order.id, event.target.value)} className={`rounded-lg px-3 py-2 font-semibold ring-1 outline-none ${statusClass(order.payment_status || "Pending")}`}>{orderStatuses.map((status) => <option key={status}>{status}</option>)}</select></td><td className="whitespace-nowrap px-6 py-4 text-slate-500">{order.created_at ? new Date(order.created_at).toLocaleDateString("en-IN") : "—"}</td><td className="px-6 py-4"><div className="flex gap-2"><button onClick={() => openContactComposer("order", order)} className="rounded-lg bg-green-50 p-2 text-green-700 transition hover:bg-green-100" aria-label={`Message ${order.customer_name}`} title="WhatsApp or email"><FaWhatsapp /></button><button onClick={() => openEdit("order", order)} className="rounded-lg bg-blue-50 p-2 text-blue-700 transition hover:bg-blue-100" aria-label={`Edit ${order.customer_name}`} title="Edit order"><FaEdit /></button><button onClick={() => deleteRecord("order", order.id, `order for ${order.customer_name || "this customer"}`)} className="rounded-lg bg-red-50 p-2 text-red-700 transition hover:bg-red-100" aria-label={`Delete ${order.customer_name}`} title="Delete order"><FaTrash /></button></div></td></tr>)}</tbody></table>
+                ) : isDemosTab ? (
+                  <table className="w-full min-w-[1250px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-6 py-4">Farmer</th><th className="px-6 py-4">Contact / location</th><th className="px-6 py-4">Crop</th><th className="px-6 py-4">Demo product</th><th className="px-6 py-4">Method</th><th className="px-6 py-4">Demo date</th><th className="px-6 py-4">Before / after photos</th><th className="px-6 py-4">Observation</th><th className="px-6 py-4">Actions</th></tr></thead><tbody className="divide-y divide-slate-100">{results.map((demo) => <tr key={demo.id} className="align-top transition hover:bg-green-50/50"><td className="px-6 py-4 font-semibold text-slate-900">{demo.farmer_name || "—"}</td><td className="px-6 py-4"><p>{demo.mobile || "—"}</p><p className="text-slate-500">{[demo.village, demo.taluka, demo.district].filter(Boolean).join(", ") || "—"}</p></td><td className="px-6 py-4">{demo.crop_name || "—"}</td><td className="px-6 py-4">{demo.demo_product || "—"}</td><td className="px-6 py-4">{demo.application_method || "—"}</td><td className="px-6 py-4">{demo.demo_date || "—"}</td><td className="px-6 py-4"><div className="flex gap-2">{demo.before_image_url && <a href={demo.before_image_url} target="_blank" rel="noreferrer"><img src={demo.before_image_url} alt="Before demonstration" className="h-12 w-12 rounded-lg object-cover" /></a>}{demo.after_image_url && <a href={demo.after_image_url} target="_blank" rel="noreferrer"><img src={demo.after_image_url} alt="After demonstration" className="h-12 w-12 rounded-lg object-cover" /></a>}{!demo.before_image_url && !demo.after_image_url && "—"}</div></td><td className="max-w-xs px-6 py-4">{demo.final_observation || "—"}</td><td className="px-6 py-4"><div className="flex gap-2"><button onClick={() => openEdit("demo", demo)} className="rounded-lg bg-blue-50 p-2 text-blue-700 transition hover:bg-blue-100" aria-label={`Edit ${demo.farmer_name || "demo report"}`} title="Edit demo report"><FaEdit /></button><button onClick={() => downloadDemoPdf(demo)} className="rounded-lg bg-amber-50 p-2 text-amber-700 transition hover:bg-amber-100" aria-label={`Download ${demo.farmer_name || "demo report"}`} title="Download demo report"><FaDownload /></button><button onClick={() => printDemoReport(demo)} className="rounded-lg bg-green-50 p-2 text-green-700 transition hover:bg-green-100" aria-label={`Print ${demo.farmer_name || "demo report"}`} title="Print demo report"><FaPrint /></button></div></td></tr>)}</tbody></table>
                 ) : (
                   <table className="w-full min-w-[1550px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-6 py-4">Dealer / firm</th><th className="px-6 py-4">Contact</th><th className="px-6 py-4">Address</th><th className="px-6 py-4">Deposit</th><th className="px-6 py-4">Experience</th><th className="px-6 py-4">Message</th><th className="px-6 py-4">Status</th><th className="px-6 py-4">Date</th><th className="px-6 py-4">Actions</th></tr></thead><tbody className="divide-y divide-slate-100">{results.map((application) => <tr key={application.id} className="align-top transition hover:bg-green-50/50"><td className="px-6 py-4"><p className="font-semibold text-slate-900">{application.dealer_name}</p><p className="mt-1 text-slate-500">{application.firm_name}</p></td><td className="px-6 py-4"><p>{application.mobile}</p><p className="mt-1 text-slate-500">{application.email}</p></td><td className="max-w-xs px-6 py-4 leading-6">{[application.address, application.district, application.state, application.pincode].filter(Boolean).join(", ")}</td><td className="px-6 py-4 font-semibold">{application.deposit_amount == null ? "—" : `₹${Number(application.deposit_amount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</td><td className="px-6 py-4">{application.experience || "—"}</td><td className="max-w-xs px-6 py-4 leading-6">{application.message || "—"}</td><td className="px-6 py-4"><select value={application.status || "New"} onChange={(event) => updateApplicationStatus(application.id, event.target.value)} className={`rounded-lg px-3 py-2 font-semibold ring-1 outline-none ${statusClass(application.status || "New")}`}>{applicationStatuses.map((status) => <option key={status}>{status}</option>)}</select></td><td className="whitespace-nowrap px-6 py-4 text-slate-500">{application.created_at ? new Date(application.created_at).toLocaleDateString("en-IN") : "—"}</td><td className="px-6 py-4"><div className="flex gap-2"><button onClick={() => openContactComposer("application", application)} className="rounded-lg bg-green-50 p-2 text-green-700 transition hover:bg-green-100" aria-label={`Contact ${application.dealer_name}`} title="WhatsApp or Gmail"><FaWhatsapp /></button><button onClick={() => openContactComposer("application", application, true)} className="rounded-lg bg-amber-50 p-2 text-amber-700 transition hover:bg-amber-100" aria-label={`Request documents from ${application.dealer_name}`} title="Request documents"><FaFileAlt /></button><button onClick={() => openEdit("application", application)} className="rounded-lg bg-blue-50 p-2 text-blue-700 transition hover:bg-blue-100" aria-label={`Edit ${application.dealer_name}`} title="Edit application"><FaEdit /></button><button onClick={() => deleteRecord("application", application.id, `application from ${application.dealer_name || "this dealer"}`)} className="rounded-lg bg-red-50 p-2 text-red-700 transition hover:bg-red-100" aria-label={`Delete ${application.dealer_name}`} title="Delete application"><FaTrash /></button></div></td></tr>)}</tbody></table>
                 )}
-                {results.length === 0 && <div className="px-6 py-16 text-center"><FaClipboardList className="mx-auto text-3xl text-slate-300" /><p className="mt-3 font-semibold text-slate-700">No {isOrdersTab ? "orders" : "applications"} found</p><p className="mt-1 text-sm text-slate-500">Try a different search or refresh the dashboard.</p></div>}
+                {results.length === 0 && <div className="px-6 py-16 text-center"><FaClipboardList className="mx-auto text-3xl text-slate-300" /><p className="mt-3 font-semibold text-slate-700">No {isOrdersTab ? "orders" : isDemosTab ? "demo reports" : "applications"} found</p><p className="mt-1 text-sm text-slate-500">Try a different search or refresh the dashboard.</p></div>}
               </div>
             </section>
           </>
@@ -319,7 +463,7 @@ export default function AdminOrders() {
       {editing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4" role="dialog" aria-modal="true" aria-label="Edit record">
           <form onSubmit={saveEdit} className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl sm:p-8">
-            <div className="flex items-start justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-wider text-green-700">Admin edit</p><h2 className="mt-1 text-2xl font-extrabold text-slate-900">Edit {editing.type === "order" ? "order" : "dealership application"}</h2></div><button type="button" onClick={() => setEditing(null)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100" aria-label="Close edit form">×</button></div>
+            <div className="flex items-start justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-wider text-green-700">Admin edit</p><h2 className="mt-1 text-2xl font-extrabold text-slate-900">Edit {editing.type === "order" ? "order" : editing.type === "demo" ? "farmer demo report" : "dealership application"}</h2></div><button type="button" onClick={() => setEditing(null)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100" aria-label="Close edit form">×</button></div>
             {editing.type === "order" ? (
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 <label className="grid gap-1 text-sm font-semibold">Customer name<input required value={editData.customer_name} onChange={(event) => setEditData({ ...editData, customer_name: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
@@ -327,6 +471,26 @@ export default function AdminOrders() {
                 <label className="grid gap-1 text-sm font-semibold">Village<input value={editData.village} onChange={(event) => setEditData({ ...editData, village: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
                 <label className="grid gap-1 text-sm font-semibold">Status<select value={editData.payment_status} onChange={(event) => setEditData({ ...editData, payment_status: event.target.value })} className="rounded-lg border p-3 font-normal">{orderStatuses.map((status) => <option key={status}>{status}</option>)}</select></label>
                 <label className="grid gap-1 text-sm font-semibold sm:col-span-2">Products<input value={editData.product_name} onChange={(event) => setEditData({ ...editData, product_name: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+              </div>
+            ) : editing.type === "demo" ? (
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                <label className="grid gap-1 text-sm font-semibold">Farmer name<input required value={editData.farmer_name} onChange={(event) => setEditData({ ...editData, farmer_name: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Mobile<input required value={editData.mobile} onChange={(event) => setEditData({ ...editData, mobile: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Village<input value={editData.village} onChange={(event) => setEditData({ ...editData, village: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Taluka<input value={editData.taluka} onChange={(event) => setEditData({ ...editData, taluka: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">District<input value={editData.district} onChange={(event) => setEditData({ ...editData, district: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Crop name<input required value={editData.crop_name} onChange={(event) => setEditData({ ...editData, crop_name: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Demo product<input required value={editData.demo_product} onChange={(event) => setEditData({ ...editData, demo_product: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Demo crop<input value={editData.demo_crop_name} onChange={(event) => setEditData({ ...editData, demo_crop_name: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Demo area<input value={editData.demo_area} onChange={(event) => setEditData({ ...editData, demo_area: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Crop stage / days<input value={editData.crop_stage_days} onChange={(event) => setEditData({ ...editData, crop_stage_days: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Application method<select value={editData.application_method} onChange={(event) => setEditData({ ...editData, application_method: event.target.value })} className="rounded-lg border p-3 font-normal"><option>Spray</option><option>Drip irrigation</option><option>Soil application</option><option>Top dressing</option><option>Other</option></select></label>
+                <label className="grid gap-1 text-sm font-semibold">Demo date<input type="date" value={editData.demo_date} onChange={(event) => setEditData({ ...editData, demo_date: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Follow-up date<input type="date" value={editData.follow_up_date} onChange={(event) => setEditData({ ...editData, follow_up_date: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Days after demo<input value={editData.days_after_demo} onChange={(event) => setEditData({ ...editData, days_after_demo: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Officer name<input value={editData.officer_name} onChange={(event) => setEditData({ ...editData, officer_name: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Report location<input value={editData.report_location} onChange={(event) => setEditData({ ...editData, report_location: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold sm:col-span-2">Final observation<textarea rows="3" value={editData.final_observation} onChange={(event) => setEditData({ ...editData, final_observation: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
               </div>
             ) : (
               <div className="mt-6 grid gap-4 sm:grid-cols-2">

@@ -21,6 +21,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Dealership from "./pages/Dealership";
 import ContactPage from "./pages/ContactPage";
 import ProductPage from "./pages/ProductPage";
+import FarmerDemo from "./pages/FarmerDemo";
 
 AOS.init({
   duration: 1000,
@@ -46,6 +47,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/dealership" element={<Dealership />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/products/:slug" element={<ProductPage />} />
+        <Route path="/farmer-demo" element={<FarmerDemo />} />
         
         </Routes>
       </BrowserRouter>
