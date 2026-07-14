@@ -32,3 +32,6 @@ alter table public.farmer_demos add column if not exists before_image_url text, 
 insert into storage.buckets (id, name, public) values ('farmer-demo-images', 'farmer-demo-images', true) on conflict (id) do update set public = true;
 drop policy if exists "Anyone can upload farmer demo images" on storage.objects;
 create policy "Anyone can upload farmer demo images" on storage.objects for insert to anon with check (bucket_id = 'farmer-demo-images');
+
+drop policy if exists "Authenticated users can upload farmer demo images" on storage.objects;
+create policy "Authenticated users can upload farmer demo images" on storage.objects for insert to authenticated with check (bucket_id = 'farmer-demo-images');
