@@ -138,7 +138,7 @@ const Dealership = () => {
     setIsSubmitting(true);
     setSubmitError("");
 
-    const { error } = await supabase.from("dealership_applications").insert({
+    const payload = {
       dealer_name: formData.dealerName,
       firm_name: formData.firmName,
       firm_type: formData.firmType || null,
@@ -149,21 +149,31 @@ const Dealership = () => {
       district: formData.district,
       state: formData.state,
       pincode: formData.pincode,
-      taluka: formData.taluka,
-      village_city: formData.villageCity,
+      taluka: formData.taluka || null,
+      village_city: formData.villageCity || null,
       pan_number: formData.panNumber || null,
       gst_number: formData.gstNumber || null,
       fertilizer_license: formData.fertilizerLicense || null,
       pesticide_license: formData.pesticideLicense || null,
       business_type: formData.businessType || null,
       annual_turnover: formData.annualTurnover || null,
-      sales_target: formData.salesTarget || null,
+      sales_target: formData.salesTarget ? Number(formData.salesTarget) : null,
       deposit_amount: formData.depositAmount ? Number(formData.depositAmount) : null,
       experience: formData.experience || null,
       message: formData.message || null,
       declaration_accepted: formData.declarationAccepted,
       status: "New",
-    });
+    };
+
+    let { error } = await supabase.from("dealership_applications").insert(payload);
+
+    if (error && error.code === "PGRST204" && /taluka|village_city/i.test(error.message || "")) {
+      const fallbackPayload = { ...payload };
+      delete fallbackPayload.taluka;
+      delete fallbackPayload.village_city;
+      const retry = await supabase.from("dealership_applications").insert(fallbackPayload);
+      error = retry.error;
+    }
 
     setIsSubmitting(false);
 
