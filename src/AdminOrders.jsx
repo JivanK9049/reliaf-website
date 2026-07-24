@@ -181,6 +181,115 @@ export default function AdminOrders() {
     pdf.save(`farmer-demo-${demo.farmer_name?.replace(/[^a-z0-9]+/gi, "-").toLowerCase() || demo.id}.pdf`);
   };
 
+  const downloadDealershipApplicationPdf = async (application) => {
+    const pdf = new jsPDF({ unit: "mm", format: "a4" });
+    const pageHeight = 297;
+    const pageWidth = 210;
+    let y = 54;
+
+    const addPage = () => {
+      pdf.addPage();
+      y = 20;
+    };
+
+    const field = (label, value) => {
+      const displayValue = value === null || value === undefined || value === "" ? "—" : String(value);
+      const lines = pdf.splitTextToSize(displayValue, 124);
+      const height = Math.max(8, lines.length * 5 + 3);
+      if (y + height > pageHeight - 18) addPage();
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(10);
+      pdf.setTextColor(51, 65, 85);
+      pdf.text(label, 15, y);
+      pdf.setFont("helvetica", "normal");
+      pdf.setTextColor(15, 23, 42);
+      pdf.text(lines, 67, y);
+      y += height;
+    };
+
+    const section = (title) => {
+      if (y + 13 > pageHeight - 18) addPage();
+      pdf.setFillColor(240, 253, 244);
+      pdf.roundedRect(12, y - 5, 186, 9, 2, 2, "F");
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(11);
+      pdf.setTextColor(21, 128, 61);
+      pdf.text(title, 15, y + 1);
+      y += 12;
+    };
+
+    let logoDataUrl = null;
+    try {
+      const response = await fetch("/logo.png", { cache: "no-store" });
+      if (response.ok) {
+        const logoBlob = await response.blob();
+        logoDataUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(logoBlob);
+        });
+      }
+    } catch {
+      // Keep generating the application PDF if the logo is unavailable.
+    }
+
+    pdf.setFillColor(248, 250, 252);
+    pdf.roundedRect(10, 8, 190, 33, 3, 3, "F");
+    if (logoDataUrl) pdf.addImage(logoDataUrl, "PNG", 15, 12, 26, 26);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(18);
+    pdf.setTextColor(21, 128, 61);
+    pdf.text("Reliaf Agrotech Pvt. Ltd.", 48, 21);
+    pdf.setFontSize(13);
+    pdf.setTextColor(15, 23, 42);
+    pdf.text("Dealership Application", 48, 30);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(9);
+    pdf.setTextColor(71, 85, 105);
+    pdf.text(`Submitted: ${application.created_at ? new Date(application.created_at).toLocaleDateString("en-IN") : "—"}`, 48, 37);
+
+    section("Business and contact details");
+    field("Firm / business name", application.firm_name);
+    field("Type of firm", application.firm_type);
+    field("Responsible person", application.dealer_name);
+    field("Mobile number", application.mobile);
+    field("WhatsApp number", application.whatsapp);
+    field("Gmail address", application.email);
+    field("Business address", application.address);
+    field("Location", [application.village_city, application.taluka, application.district, application.state, application.pincode].filter(Boolean).join(", "));
+
+    section("Registration and business profile");
+    field("GST number", application.gst_number);
+    field("PAN number", application.pan_number);
+    field("Fertilizer licence number", application.fertilizer_license);
+    field("Pesticide licence number", application.pesticide_license);
+    field("Nature of business", application.business_type);
+    field("Dealership experience", application.experience);
+    field("Previous annual turnover", application.annual_turnover == null ? null : `₹${Number(application.annual_turnover).toLocaleString("en-IN")}`);
+    field("Expected annual sales target", application.sales_target == null ? null : `₹${Number(application.sales_target).toLocaleString("en-IN")}`);
+    field("Expected security deposit", application.deposit_amount == null ? null : `₹${Number(application.deposit_amount).toLocaleString("en-IN")}`);
+
+    section("Additional information");
+    field("Application status", application.status || "New");
+    field("Message", application.message);
+    field("Declaration accepted", application.declaration_accepted ? "Yes" : "No");
+
+    const pageCount = pdf.getNumberOfPages();
+    for (let page = 1; page <= pageCount; page += 1) {
+      pdf.setPage(page);
+      pdf.setDrawColor(226, 232, 240);
+      pdf.line(15, 284, pageWidth - 15, 284);
+      pdf.setFontSize(8);
+      pdf.setTextColor(100, 116, 139);
+      pdf.text("Reliaf Agrotech Pvt. Ltd.", 15, 290);
+      pdf.text(`Page ${page} of ${pageCount}`, pageWidth - 15, 290, { align: "right" });
+    }
+
+    const fileName = application.firm_name || application.dealer_name || application.id;
+    pdf.save(`dealership-application-${String(fileName).replace(/[^a-z0-9]+/gi, "-").replace(/(^-|-$)/g, "").toLowerCase()}.pdf`);
+  };
+
   const printDemoReport = (demo) => {
     const printWindow = window.open("", "_blank", "width=900,height=700");
     if (!printWindow) {
@@ -452,7 +561,7 @@ export default function AdminOrders() {
                 ) : isDemosTab ? (
                   <table className="w-full min-w-[1250px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-6 py-4">Farmer</th><th className="px-6 py-4">Contact / location</th><th className="px-6 py-4">Crop</th><th className="px-6 py-4">Demo product</th><th className="px-6 py-4">Method</th><th className="px-6 py-4">Demo date</th><th className="px-6 py-4">Before / after photos</th><th className="px-6 py-4">Observation</th><th className="px-6 py-4">Actions</th></tr></thead><tbody className="divide-y divide-slate-100">{results.map((demo) => <tr key={demo.id} className="align-top transition hover:bg-green-50/50"><td className="px-6 py-4 font-semibold text-slate-900">{demo.farmer_name || "—"}</td><td className="px-6 py-4"><p>{demo.mobile || "—"}</p><p className="text-slate-500">{[demo.village, demo.taluka, demo.district].filter(Boolean).join(", ") || "—"}</p></td><td className="px-6 py-4">{demo.crop_name || "—"}</td><td className="px-6 py-4">{demo.demo_product || "—"}</td><td className="px-6 py-4">{demo.application_method || "—"}</td><td className="px-6 py-4">{demo.demo_date || "—"}</td><td className="px-6 py-4"><div className="flex gap-2">{demo.before_image_url && <a href={demo.before_image_url} target="_blank" rel="noreferrer"><img src={demo.before_image_url} alt="Before demonstration" className="h-12 w-12 rounded-lg object-cover" /></a>}{demo.after_image_url && <a href={demo.after_image_url} target="_blank" rel="noreferrer"><img src={demo.after_image_url} alt="After demonstration" className="h-12 w-12 rounded-lg object-cover" /></a>}{!demo.before_image_url && !demo.after_image_url && "—"}</div></td><td className="max-w-xs px-6 py-4">{demo.final_observation || "—"}</td><td className="px-6 py-4"><div className="flex gap-2"><button onClick={() => openEdit("demo", demo)} className="rounded-lg bg-blue-50 p-2 text-blue-700 transition hover:bg-blue-100" aria-label={`Edit ${demo.farmer_name || "demo report"}`} title="Edit demo report"><FaEdit /></button><button onClick={() => downloadDemoPdf(demo)} className="rounded-lg bg-amber-50 p-2 text-amber-700 transition hover:bg-amber-100" aria-label={`Download ${demo.farmer_name || "demo report"}`} title="Download demo report"><FaDownload /></button><button onClick={() => printDemoReport(demo)} className="rounded-lg bg-green-50 p-2 text-green-700 transition hover:bg-green-100" aria-label={`Print ${demo.farmer_name || "demo report"}`} title="Print demo report"><FaPrint /></button></div></td></tr>)}</tbody></table>
                 ) : (
-                  <table className="w-full min-w-[1550px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-6 py-4">Dealer / firm</th><th className="px-6 py-4">Contact</th><th className="px-6 py-4">Address</th><th className="px-6 py-4">Deposit</th><th className="px-6 py-4">Experience</th><th className="px-6 py-4">Message</th><th className="px-6 py-4">Status</th><th className="px-6 py-4">Date</th><th className="px-6 py-4">Actions</th></tr></thead><tbody className="divide-y divide-slate-100">{results.map((application) => <tr key={application.id} className="align-top transition hover:bg-green-50/50"><td className="px-6 py-4"><p className="font-semibold text-slate-900">{application.dealer_name}</p><p className="mt-1 text-slate-500">{application.firm_name}</p></td><td className="px-6 py-4"><p>{application.mobile}</p><p className="mt-1 text-slate-500">{application.email}</p></td><td className="max-w-xs px-6 py-4 leading-6">{[application.address, application.district, application.state, application.pincode].filter(Boolean).join(", ")}</td><td className="px-6 py-4 font-semibold">{application.deposit_amount == null ? "—" : `₹${Number(application.deposit_amount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</td><td className="px-6 py-4">{application.experience || "—"}</td><td className="max-w-xs px-6 py-4 leading-6">{application.message || "—"}</td><td className="px-6 py-4"><select value={application.status || "New"} onChange={(event) => updateApplicationStatus(application.id, event.target.value)} className={`rounded-lg px-3 py-2 font-semibold ring-1 outline-none ${statusClass(application.status || "New")}`}>{applicationStatuses.map((status) => <option key={status}>{status}</option>)}</select></td><td className="whitespace-nowrap px-6 py-4 text-slate-500">{application.created_at ? new Date(application.created_at).toLocaleDateString("en-IN") : "—"}</td><td className="px-6 py-4"><div className="flex gap-2"><button onClick={() => openContactComposer("application", application)} className="rounded-lg bg-green-50 p-2 text-green-700 transition hover:bg-green-100" aria-label={`Contact ${application.dealer_name}`} title="WhatsApp or Gmail"><FaWhatsapp /></button><button onClick={() => openContactComposer("application", application, true)} className="rounded-lg bg-amber-50 p-2 text-amber-700 transition hover:bg-amber-100" aria-label={`Request documents from ${application.dealer_name}`} title="Request documents"><FaFileAlt /></button><button onClick={() => openEdit("application", application)} className="rounded-lg bg-blue-50 p-2 text-blue-700 transition hover:bg-blue-100" aria-label={`Edit ${application.dealer_name}`} title="Edit application"><FaEdit /></button><button onClick={() => deleteRecord("application", application.id, `application from ${application.dealer_name || "this dealer"}`)} className="rounded-lg bg-red-50 p-2 text-red-700 transition hover:bg-red-100" aria-label={`Delete ${application.dealer_name}`} title="Delete application"><FaTrash /></button></div></td></tr>)}</tbody></table>
+                  <table className="w-full min-w-[1550px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-6 py-4">Dealer / firm</th><th className="px-6 py-4">Contact</th><th className="px-6 py-4">Address</th><th className="px-6 py-4">Deposit</th><th className="px-6 py-4">Experience</th><th className="px-6 py-4">Message</th><th className="px-6 py-4">Status</th><th className="px-6 py-4">Date</th><th className="px-6 py-4">Actions</th></tr></thead><tbody className="divide-y divide-slate-100">{results.map((application) => <tr key={application.id} className="align-top transition hover:bg-green-50/50"><td className="px-6 py-4"><p className="font-semibold text-slate-900">{application.dealer_name}</p><p className="mt-1 text-slate-500">{application.firm_name}</p></td><td className="px-6 py-4"><p>{application.mobile}</p><p className="mt-1 text-slate-500">{application.email}</p></td><td className="max-w-xs px-6 py-4 leading-6">{[application.address, application.district, application.state, application.pincode].filter(Boolean).join(", ")}</td><td className="px-6 py-4 font-semibold">{application.deposit_amount == null ? "—" : `₹${Number(application.deposit_amount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</td><td className="px-6 py-4">{application.experience || "—"}</td><td className="max-w-xs px-6 py-4 leading-6">{application.message || "—"}</td><td className="px-6 py-4"><select value={application.status || "New"} onChange={(event) => updateApplicationStatus(application.id, event.target.value)} className={`rounded-lg px-3 py-2 font-semibold ring-1 outline-none ${statusClass(application.status || "New")}`}>{applicationStatuses.map((status) => <option key={status}>{status}</option>)}</select></td><td className="whitespace-nowrap px-6 py-4 text-slate-500">{application.created_at ? new Date(application.created_at).toLocaleDateString("en-IN") : "—"}</td><td className="px-6 py-4"><div className="flex gap-2"><button onClick={() => openContactComposer("application", application)} className="rounded-lg bg-green-50 p-2 text-green-700 transition hover:bg-green-100" aria-label={`Contact ${application.dealer_name}`} title="WhatsApp or Gmail"><FaWhatsapp /></button><button onClick={() => openContactComposer("application", application, true)} className="rounded-lg bg-amber-50 p-2 text-amber-700 transition hover:bg-amber-100" aria-label={`Request documents from ${application.dealer_name}`} title="Request documents"><FaFileAlt /></button><button onClick={() => downloadDealershipApplicationPdf(application)} className="rounded-lg bg-violet-50 p-2 text-violet-700 transition hover:bg-violet-100" aria-label={`Download application from ${application.dealer_name}`} title="Download application PDF"><FaDownload /></button><button onClick={() => openEdit("application", application)} className="rounded-lg bg-blue-50 p-2 text-blue-700 transition hover:bg-blue-100" aria-label={`Edit ${application.dealer_name}`} title="Edit application"><FaEdit /></button><button onClick={() => deleteRecord("application", application.id, `application from ${application.dealer_name || "this dealer"}`)} className="rounded-lg bg-red-50 p-2 text-red-700 transition hover:bg-red-100" aria-label={`Delete ${application.dealer_name}`} title="Delete application"><FaTrash /></button></div></td></tr>)}</tbody></table>
                 )}
                 {results.length === 0 && <div className="px-6 py-16 text-center"><FaClipboardList className="mx-auto text-3xl text-slate-300" /><p className="mt-3 font-semibold text-slate-700">No {isOrdersTab ? "orders" : isDemosTab ? "demo reports" : "applications"} found</p><p className="mt-1 text-sm text-slate-500">Try a different search or refresh the dashboard.</p></div>}
               </div>
