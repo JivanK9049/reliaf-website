@@ -17,6 +17,7 @@ import {
   FaSignOutAlt,
   FaTruck,
   FaTrash,
+  FaTicketAlt,
   FaUsers,
   FaWhatsapp,
 } from "react-icons/fa";
@@ -24,6 +25,7 @@ import { supabase } from "./supabase";
 
 const orderStatuses = ["Pending", "Confirmed", "Dispatched", "Delivered"];
 const applicationStatuses = ["New", "Contacted", "Under Review", "Approved", "Rejected"];
+const couponStatuses = ["Active", "Used", "Cancelled"];
 
 const statusClass = (status) => ({
   Pending: "bg-amber-50 text-amber-800 ring-amber-200",
@@ -35,6 +37,8 @@ const statusClass = (status) => ({
   "Under Review": "bg-violet-50 text-violet-800 ring-violet-200",
   Approved: "bg-emerald-50 text-emerald-800 ring-emerald-200",
   Rejected: "bg-red-50 text-red-800 ring-red-200",
+  Used: "bg-blue-50 text-blue-800 ring-blue-200",
+  Cancelled: "bg-red-50 text-red-800 ring-red-200",
 }[status] || "bg-gray-50 text-gray-700 ring-gray-200");
 
 function MetricCard({ label, value, detail, icon: Icon, tone }) {
@@ -57,6 +61,7 @@ export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [applications, setApplications] = useState([]);
   const [demos, setDemos] = useState([]);
+  const [coupons, setCoupons] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -69,6 +74,7 @@ export default function AdminOrders() {
   const isOrdersTab = activeTab === "orders";
   const isDemosTab = activeTab === "demos";
   const isApplicationsTab = activeTab === "applications";
+  const isCouponsTab = activeTab === "coupons";
 
   useEffect(() => {
     let isCurrent = true;
@@ -83,7 +89,7 @@ export default function AdminOrders() {
         return;
       }
 
-      const table = activeTab === "orders" ? "orders" : activeTab === "demos" ? "farmer_demos" : "dealership_applications";
+      const table = activeTab === "orders" ? "orders" : activeTab === "demos" ? "farmer_demos" : activeTab === "coupons" ? "lucky_draw_coupons" : "dealership_applications";
       const { data, error: requestError } = await supabase
         .from(table)
         .select("*")
@@ -93,6 +99,7 @@ export default function AdminOrders() {
       if (requestError) setError(requestError.message);
       else if (activeTab === "orders") setOrders(data || []);
       else if (activeTab === "demos") setDemos(data || []);
+      else if (activeTab === "coupons") setCoupons(data || []);
       else setApplications(data || []);
       setLoading(false);
     };
@@ -290,6 +297,73 @@ export default function AdminOrders() {
     pdf.save(`dealership-application-${String(fileName).replace(/[^a-z0-9]+/gi, "-").replace(/(^-|-$)/g, "").toLowerCase()}.pdf`);
   };
 
+  const downloadCouponPdf = async (coupon) => {
+    const pdf = new jsPDF({ unit: "mm", format: "a4" });
+    let logoDataUrl = null;
+    try {
+      const response = await fetch("/logo.png", { cache: "no-store" });
+      if (response.ok) {
+        const blob = await response.blob();
+        logoDataUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(blob);
+        });
+      }
+    } catch {
+      // The coupon remains downloadable if the logo cannot be loaded.
+    }
+    pdf.setFillColor(20, 83, 45);
+    pdf.roundedRect(10, 10, 190, 55, 4, 4, "F");
+    if (logoDataUrl) pdf.addImage(logoDataUrl, "PNG", 18, 17, 32, 32);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(20);
+    pdf.setTextColor(255, 255, 255);
+    pdf.text("Reliaf Agrotech Pvt. Ltd.", 58, 28);
+    pdf.setFontSize(14);
+    pdf.text("Lucky Draw Coupon", 58, 39);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(10);
+    pdf.text("Keep this coupon safe for the lucky draw.", 58, 48);
+    pdf.setFillColor(254, 243, 199);
+    pdf.roundedRect(20, 78, 170, 35, 3, 3, "F");
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(11);
+    pdf.setTextColor(120, 53, 15);
+    pdf.text("COUPON NUMBER", 105, 89, { align: "center" });
+    pdf.setFontSize(24);
+    pdf.setTextColor(20, 83, 45);
+    pdf.text(coupon.coupon_number || "—", 105, 103, { align: "center" });
+    const rows = [
+      ["Dealer name", coupon.dealer_name],
+      ["Shop name", coupon.shop_name],
+      ["Mobile number", coupon.mobile],
+      ["Address", coupon.address],
+      ["Coupon amount", coupon.coupon_amount == null ? "—" : `Rs. ${Number(coupon.coupon_amount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`],
+      ["Status", coupon.status || "Active"],
+      ["Generated on", coupon.created_at ? new Date(coupon.created_at).toLocaleDateString("en-IN") : "—"],
+    ];
+    let y = 130;
+    rows.forEach(([label, value]) => {
+      const lines = pdf.splitTextToSize(String(value || "—"), 105);
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(11);
+      pdf.setTextColor(51, 65, 85);
+      pdf.text(label, 25, y);
+      pdf.setFont("helvetica", "normal");
+      pdf.setTextColor(15, 23, 42);
+      pdf.text(lines, 75, y);
+      y += Math.max(12, lines.length * 5 + 5);
+    });
+    pdf.setDrawColor(187, 247, 208);
+    pdf.line(20, 263, 190, 263);
+    pdf.setFontSize(9);
+    pdf.setTextColor(71, 85, 105);
+    pdf.text("Reliaf Agrotech Pvt. Ltd. • Lucky Draw Coupon", 105, 271, { align: "center" });
+    pdf.save(`lucky-draw-coupon-${coupon.coupon_number || coupon.id}.pdf`);
+  };
+
   const printDemoReport = (demo) => {
     const printWindow = window.open("", "_blank", "width=900,height=700");
     if (!printWindow) {
@@ -311,6 +385,12 @@ export default function AdminOrders() {
     const { error: updateError } = await supabase.from("dealership_applications").update({ status }).eq("id", id);
     if (updateError) return window.alert(updateError.message);
     setApplications((current) => current.map((application) => (application.id === id ? { ...application, status } : application)));
+  };
+
+  const updateCouponStatus = async (id, status) => {
+    const { error: updateError } = await supabase.from("lucky_draw_coupons").update({ status }).eq("id", id);
+    if (updateError) return window.alert(updateError.message);
+    setCoupons((current) => current.map((coupon) => (coupon.id === id ? { ...coupon, status } : coupon)));
   };
 
   const openEdit = (type, item) => {
@@ -348,6 +428,18 @@ export default function AdminOrders() {
       });
       return;
     }
+    if (type === "coupon") {
+      setEditData({
+        coupon_number: item.coupon_number || "",
+        dealer_name: item.dealer_name || "",
+        shop_name: item.shop_name || "",
+        mobile: item.mobile || "",
+        address: item.address || "",
+        coupon_amount: item.coupon_amount ?? "",
+        status: item.status || "Active",
+      });
+      return;
+    }
     setEditData({
       dealer_name: item.dealer_name || "",
       firm_name: item.firm_name || "",
@@ -382,13 +474,19 @@ export default function AdminOrders() {
     setSavingEdit(true);
     const isOrder = editing.type === "order";
     const isDemo = editing.type === "demo";
-    const payload = isOrder ? editData : isDemo ? { ...editData } : {
+    const isCoupon = editing.type === "coupon";
+    const couponEditData = { ...editData };
+    delete couponEditData.coupon_number;
+    const payload = isOrder ? editData : isDemo ? { ...editData } : isCoupon ? {
+      ...couponEditData,
+      coupon_amount: editData.coupon_amount === "" ? 0 : Number(editData.coupon_amount),
+    } : {
       ...editData,
       deposit_amount: editData.deposit_amount === "" ? null : Number(editData.deposit_amount),
       annual_turnover: editData.annual_turnover === "" ? null : Number(editData.annual_turnover),
       sales_target: editData.sales_target === "" ? null : Number(editData.sales_target),
     };
-    const table = isOrder ? "orders" : isDemo ? "farmer_demos" : "dealership_applications";
+    const table = isOrder ? "orders" : isDemo ? "farmer_demos" : isCoupon ? "lucky_draw_coupons" : "dealership_applications";
     const { error: updateError } = await supabase.from(table).update(payload).eq("id", editing.id);
     setSavingEdit(false);
 
@@ -399,13 +497,14 @@ export default function AdminOrders() {
 
     if (isOrder) setOrders((current) => current.map((item) => (item.id === editing.id ? { ...item, ...payload } : item)));
     else if (isDemo) setDemos((current) => current.map((item) => (item.id === editing.id ? { ...item, ...payload } : item)));
+    else if (isCoupon) setCoupons((current) => current.map((item) => (item.id === editing.id ? { ...item, ...payload } : item)));
     else setApplications((current) => current.map((item) => (item.id === editing.id ? { ...item, ...payload } : item)));
     setEditing(null);
   };
 
   const deleteRecord = async (type, id, label) => {
     if (!window.confirm(`Delete ${label}? This action cannot be undone.`)) return;
-    const table = type === "order" ? "orders" : "dealership_applications";
+    const table = type === "order" ? "orders" : type === "coupon" ? "lucky_draw_coupons" : "dealership_applications";
     const { data: deletedRows, error: deleteError } = await supabase
       .from(table)
       .delete()
@@ -481,10 +580,16 @@ export default function AdminOrders() {
     return { total: demos.length, withPhotos, withFollowUp, withObservation };
   }, [demos]);
 
-  const results = (isOrdersTab ? orders : isDemosTab ? demos : applications).filter((item) => {
+  const couponStats = useMemo(() => ({
+    active: coupons.filter((coupon) => (coupon.status || "Active") === "Active").length,
+    used: coupons.filter((coupon) => coupon.status === "Used").length,
+    totalAmount: coupons.reduce((total, coupon) => total + (Number(coupon.coupon_amount) || 0), 0),
+  }), [coupons]);
+
+  const results = (isOrdersTab ? orders : isDemosTab ? demos : isCouponsTab ? coupons : applications).filter((item) => {
     const text = isOrdersTab
       ? `${item.customer_name || ""} ${item.mobile || ""} ${item.village || ""}`
-      : isDemosTab ? `${item.farmer_name || ""} ${item.mobile || ""} ${item.village || ""} ${item.crop_name || ""} ${item.demo_product || ""}` : `${item.dealer_name || ""} ${item.firm_name || ""} ${item.mobile || ""} ${item.district || ""} ${item.taluka || ""} ${item.village_city || ""}`;
+      : isDemosTab ? `${item.farmer_name || ""} ${item.mobile || ""} ${item.village || ""} ${item.crop_name || ""} ${item.demo_product || ""}` : isCouponsTab ? `${item.coupon_number || ""} ${item.dealer_name || ""} ${item.mobile || ""} ${item.address || ""}` : `${item.dealer_name || ""} ${item.firm_name || ""} ${item.mobile || ""} ${item.district || ""} ${item.taluka || ""} ${item.village_city || ""}`;
     return text.toLowerCase().includes(search.toLowerCase());
   });
 
@@ -511,12 +616,13 @@ export default function AdminOrders() {
         <div className="sticky top-3 z-10 mt-6 flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-sm backdrop-blur">
           <button onClick={() => switchTab("orders")} className={`inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold transition ${isOrdersTab ? "bg-green-700 text-white shadow" : "text-slate-600 hover:bg-green-50"}`}><FaBoxOpen /> Orders <span className={`rounded-full px-2 py-0.5 text-xs ${isOrdersTab ? "bg-white/20" : "bg-slate-100"}`}>{orders.length}</span></button>
           <button onClick={() => switchTab("applications")} className={`inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold transition ${isApplicationsTab ? "bg-green-700 text-white shadow" : "text-slate-600 hover:bg-green-50"}`}><FaStore /> Dealership applications <span className={`rounded-full px-2 py-0.5 text-xs ${isApplicationsTab ? "bg-white/20" : "bg-slate-100"}`}>{applications.length}</span></button>
+          <button onClick={() => switchTab("coupons")} className={`inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold transition ${isCouponsTab ? "bg-green-700 text-white shadow" : "text-slate-600 hover:bg-green-50"}`}><FaTicketAlt /> Lucky draw coupons <span className={`rounded-full px-2 py-0.5 text-xs ${isCouponsTab ? "bg-white/20" : "bg-slate-100"}`}>{coupons.length}</span></button>
           <button onClick={() => switchTab("demos")} className={`inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold transition ${isDemosTab ? "bg-green-700 text-white shadow" : "text-slate-600 hover:bg-green-50"}`}><FaClipboardList /> Farmer demos <span className={`rounded-full px-2 py-0.5 text-xs ${isDemosTab ? "bg-white/20" : "bg-slate-100"}`}>{demos.length}</span></button>
           <button onClick={() => setRefreshKey((key) => key + 1)} className="ml-auto inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold text-slate-600 hover:bg-slate-100"><FaSyncAlt /> Refresh</button>
         </div>
 
         {error ? (
-          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-700">Could not load {isOrdersTab ? "orders" : isDemosTab ? "farmer demo reports" : "dealership applications"}: {error}</div>
+          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-700">Could not load {isOrdersTab ? "orders" : isDemosTab ? "farmer demo reports" : isCouponsTab ? "lucky draw coupons" : "dealership applications"}: {error}</div>
         ) : (
           <>
             {isOrdersTab ? (
@@ -544,6 +650,13 @@ export default function AdminOrders() {
                 <MetricCard label="Follow-up scheduled" value={demoStats.withFollowUp} detail="Reports with follow-up dates" icon={FaClock} tone="bg-amber-100 text-amber-700" />
                 <MetricCard label="Observations recorded" value={demoStats.withObservation} detail="Reports with final observations" icon={FaCheckCircle} tone="bg-emerald-100 text-emerald-700" />
               </section>
+            ) : isCouponsTab ? (
+              <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <MetricCard label="Total coupons" value={coupons.length} detail="All generated lucky draw coupons" icon={FaTicketAlt} tone="bg-green-100 text-green-700" />
+                <MetricCard label="Active coupons" value={couponStats.active} detail="Eligible for the lucky draw" icon={FaCheckCircle} tone="bg-emerald-100 text-emerald-700" />
+                <MetricCard label="Used coupons" value={couponStats.used} detail="Already redeemed or selected" icon={FaClock} tone="bg-blue-100 text-blue-700" />
+                <MetricCard label="Coupon amount" value={`₹${couponStats.totalAmount.toLocaleString("en-IN")}`} detail="Total value across all coupons" icon={FaTicketAlt} tone="bg-amber-100 text-amber-700" />
+              </section>
             ) : (
               <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 <MetricCard label="Total applications" value={applications.length} detail="All dealership requests" icon={FaStore} tone="bg-green-100 text-green-700" />
@@ -554,16 +667,19 @@ export default function AdminOrders() {
             )}
 
             <section className="mt-6 overflow-hidden rounded-2xl bg-white shadow-sm">
-              <div className="border-b border-slate-100 p-5 sm:p-6"><div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-bold text-slate-900">{isOrdersTab ? "Order management" : isDemosTab ? "Farmer demo reports" : "Dealership applications"}</h2><p className="mt-1 text-sm text-slate-500">{results.length} result{results.length === 1 ? "" : "s"} shown</p></div><input type="search" placeholder={isOrdersTab ? "Search customer, mobile, or village..." : isDemosTab ? "Search farmer, mobile, crop, or demo product..." : "Search dealer, firm, or mobile..."} className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-4 focus:ring-green-100 sm:max-w-md" value={search} onChange={(event) => setSearch(event.target.value)} /></div></div>
+              <div className="border-b border-slate-100 p-5 sm:p-6"><div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-bold text-slate-900">{isOrdersTab ? "Order management" : isDemosTab ? "Farmer demo reports" : isCouponsTab ? "Lucky draw coupons" : "Dealership applications"}</h2><p className="mt-1 text-sm text-slate-500">{results.length} result{results.length === 1 ? "" : "s"} shown</p></div><input type="search" placeholder={isOrdersTab ? "Search customer, mobile, or village..." : isDemosTab ? "Search farmer, mobile, crop, or demo product..." : isCouponsTab ? "Search coupon number, dealer, or mobile..." : "Search dealer, firm, or mobile..."} className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-4 focus:ring-green-100 sm:max-w-md" value={search} onChange={(event) => setSearch(event.target.value)} /></div></div>
+              {isCouponsTab && <div className="border-b border-slate-100 px-5 py-4 sm:px-6"><a href="/lucky-draw-coupon" className="inline-flex items-center gap-2 rounded-xl bg-green-700 px-4 py-3 font-semibold text-white transition hover:bg-green-800"><FaTicketAlt /> Create lucky draw coupon</a></div>}
               <div className="overflow-x-auto">
                 {isOrdersTab ? (
                   <table className="w-full min-w-[1140px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-6 py-4">Customer</th><th className="px-6 py-4">Mobile</th><th className="px-6 py-4">Village</th><th className="px-6 py-4">Products</th><th className="px-6 py-4">Status</th><th className="px-6 py-4">Order date</th><th className="px-6 py-4">Actions</th></tr></thead><tbody className="divide-y divide-slate-100">{results.map((order) => <tr key={order.id} className="transition hover:bg-green-50/50"><td className="px-6 py-4 font-semibold text-slate-900">{order.customer_name || "—"}</td><td className="px-6 py-4">{order.mobile || "—"}</td><td className="px-6 py-4">{order.village || "—"}</td><td className="max-w-xs px-6 py-4 leading-6">{order.product_name || "—"}</td><td className="px-6 py-4"><select value={order.payment_status || "Pending"} onChange={(event) => updateOrderStatus(order.id, event.target.value)} className={`rounded-lg px-3 py-2 font-semibold ring-1 outline-none ${statusClass(order.payment_status || "Pending")}`}>{orderStatuses.map((status) => <option key={status}>{status}</option>)}</select></td><td className="whitespace-nowrap px-6 py-4 text-slate-500">{order.created_at ? new Date(order.created_at).toLocaleDateString("en-IN") : "—"}</td><td className="px-6 py-4"><div className="flex gap-2"><button onClick={() => openContactComposer("order", order)} className="rounded-lg bg-green-50 p-2 text-green-700 transition hover:bg-green-100" aria-label={`Message ${order.customer_name}`} title="WhatsApp or email"><FaWhatsapp /></button><button onClick={() => openEdit("order", order)} className="rounded-lg bg-blue-50 p-2 text-blue-700 transition hover:bg-blue-100" aria-label={`Edit ${order.customer_name}`} title="Edit order"><FaEdit /></button><button onClick={() => deleteRecord("order", order.id, `order for ${order.customer_name || "this customer"}`)} className="rounded-lg bg-red-50 p-2 text-red-700 transition hover:bg-red-100" aria-label={`Delete ${order.customer_name}`} title="Delete order"><FaTrash /></button></div></td></tr>)}</tbody></table>
                 ) : isDemosTab ? (
                   <table className="w-full min-w-[1250px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-6 py-4">Farmer</th><th className="px-6 py-4">Contact / location</th><th className="px-6 py-4">Crop</th><th className="px-6 py-4">Demo product</th><th className="px-6 py-4">Method</th><th className="px-6 py-4">Demo date</th><th className="px-6 py-4">Before / after photos</th><th className="px-6 py-4">Observation</th><th className="px-6 py-4">Actions</th></tr></thead><tbody className="divide-y divide-slate-100">{results.map((demo) => <tr key={demo.id} className="align-top transition hover:bg-green-50/50"><td className="px-6 py-4 font-semibold text-slate-900">{demo.farmer_name || "—"}</td><td className="px-6 py-4"><p>{demo.mobile || "—"}</p><p className="text-slate-500">{[demo.village, demo.taluka, demo.district].filter(Boolean).join(", ") || "—"}</p></td><td className="px-6 py-4">{demo.crop_name || "—"}</td><td className="px-6 py-4">{demo.demo_product || "—"}</td><td className="px-6 py-4">{demo.application_method || "—"}</td><td className="px-6 py-4">{demo.demo_date || "—"}</td><td className="px-6 py-4"><div className="flex gap-2">{demo.before_image_url && <a href={demo.before_image_url} target="_blank" rel="noreferrer"><img src={demo.before_image_url} alt="Before demonstration" className="h-12 w-12 rounded-lg object-cover" /></a>}{demo.after_image_url && <a href={demo.after_image_url} target="_blank" rel="noreferrer"><img src={demo.after_image_url} alt="After demonstration" className="h-12 w-12 rounded-lg object-cover" /></a>}{!demo.before_image_url && !demo.after_image_url && "—"}</div></td><td className="max-w-xs px-6 py-4">{demo.final_observation || "—"}</td><td className="px-6 py-4"><div className="flex gap-2"><button onClick={() => openEdit("demo", demo)} className="rounded-lg bg-blue-50 p-2 text-blue-700 transition hover:bg-blue-100" aria-label={`Edit ${demo.farmer_name || "demo report"}`} title="Edit demo report"><FaEdit /></button><button onClick={() => downloadDemoPdf(demo)} className="rounded-lg bg-amber-50 p-2 text-amber-700 transition hover:bg-amber-100" aria-label={`Download ${demo.farmer_name || "demo report"}`} title="Download demo report"><FaDownload /></button><button onClick={() => printDemoReport(demo)} className="rounded-lg bg-green-50 p-2 text-green-700 transition hover:bg-green-100" aria-label={`Print ${demo.farmer_name || "demo report"}`} title="Print demo report"><FaPrint /></button></div></td></tr>)}</tbody></table>
+                ) : isCouponsTab ? (
+                  <table className="w-full min-w-[1050px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-6 py-4">Coupon number</th><th className="px-6 py-4">Dealer / shop</th><th className="px-6 py-4">Mobile</th><th className="px-6 py-4">Address</th><th className="px-6 py-4">Amount</th><th className="px-6 py-4">Status</th><th className="px-6 py-4">Generated</th><th className="px-6 py-4">Actions</th></tr></thead><tbody className="divide-y divide-slate-100">{results.map((coupon) => <tr key={coupon.id} className="align-top transition hover:bg-green-50/50"><td className="px-6 py-4 font-bold text-green-800">{coupon.coupon_number}</td><td className="px-6 py-4"><p className="font-semibold text-slate-900">{coupon.dealer_name}</p><p className="mt-1 text-slate-500">{coupon.shop_name || "—"}</p></td><td className="px-6 py-4">{coupon.mobile}</td><td className="max-w-xs px-6 py-4 leading-6">{coupon.address}</td><td className="px-6 py-4 font-semibold">{coupon.coupon_amount == null ? "—" : `₹${Number(coupon.coupon_amount).toLocaleString("en-IN", { minimumFractionDigits: 2 })}`}</td><td className="px-6 py-4"><select value={coupon.status || "Active"} onChange={(event) => updateCouponStatus(coupon.id, event.target.value)} className={`rounded-lg px-3 py-2 font-semibold ring-1 outline-none ${statusClass(coupon.status || "Active")}`}>{couponStatuses.map((status) => <option key={status}>{status}</option>)}</select></td><td className="whitespace-nowrap px-6 py-4 text-slate-500">{coupon.created_at ? new Date(coupon.created_at).toLocaleDateString("en-IN") : "—"}</td><td className="px-6 py-4"><div className="flex gap-2"><button onClick={() => openEdit("coupon", coupon)} className="rounded-lg bg-blue-50 p-2 text-blue-700 transition hover:bg-blue-100" aria-label={`Edit ${coupon.coupon_number}`} title="Edit coupon"><FaEdit /></button><button onClick={() => downloadCouponPdf(coupon)} className="rounded-lg bg-violet-50 p-2 text-violet-700 transition hover:bg-violet-100" aria-label={`Download ${coupon.coupon_number}`} title="Download coupon PDF"><FaDownload /></button><button onClick={() => deleteRecord("coupon", coupon.id, `coupon ${coupon.coupon_number || ""}`)} className="rounded-lg bg-red-50 p-2 text-red-700 transition hover:bg-red-100" aria-label={`Delete ${coupon.coupon_number}`} title="Delete coupon"><FaTrash /></button></div></td></tr>)}</tbody></table>
                 ) : (
                   <table className="w-full min-w-[1550px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-6 py-4">Dealer / firm</th><th className="px-6 py-4">Contact</th><th className="px-6 py-4">Address</th><th className="px-6 py-4">Deposit</th><th className="px-6 py-4">Experience</th><th className="px-6 py-4">Message</th><th className="px-6 py-4">Status</th><th className="px-6 py-4">Date</th><th className="px-6 py-4">Actions</th></tr></thead><tbody className="divide-y divide-slate-100">{results.map((application) => <tr key={application.id} className="align-top transition hover:bg-green-50/50"><td className="px-6 py-4"><p className="font-semibold text-slate-900">{application.dealer_name}</p><p className="mt-1 text-slate-500">{application.firm_name}</p></td><td className="px-6 py-4"><p>{application.mobile}</p><p className="mt-1 text-slate-500">{application.email}</p></td><td className="max-w-xs px-6 py-4 leading-6">{[application.address, application.district, application.state, application.pincode].filter(Boolean).join(", ")}</td><td className="px-6 py-4 font-semibold">{application.deposit_amount == null ? "—" : `₹${Number(application.deposit_amount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</td><td className="px-6 py-4">{application.experience || "—"}</td><td className="max-w-xs px-6 py-4 leading-6">{application.message || "—"}</td><td className="px-6 py-4"><select value={application.status || "New"} onChange={(event) => updateApplicationStatus(application.id, event.target.value)} className={`rounded-lg px-3 py-2 font-semibold ring-1 outline-none ${statusClass(application.status || "New")}`}>{applicationStatuses.map((status) => <option key={status}>{status}</option>)}</select></td><td className="whitespace-nowrap px-6 py-4 text-slate-500">{application.created_at ? new Date(application.created_at).toLocaleDateString("en-IN") : "—"}</td><td className="px-6 py-4"><div className="flex gap-2"><button onClick={() => openContactComposer("application", application)} className="rounded-lg bg-green-50 p-2 text-green-700 transition hover:bg-green-100" aria-label={`Contact ${application.dealer_name}`} title="WhatsApp or Gmail"><FaWhatsapp /></button><button onClick={() => openContactComposer("application", application, true)} className="rounded-lg bg-amber-50 p-2 text-amber-700 transition hover:bg-amber-100" aria-label={`Request documents from ${application.dealer_name}`} title="Request documents"><FaFileAlt /></button><button onClick={() => downloadDealershipApplicationPdf(application)} className="rounded-lg bg-violet-50 p-2 text-violet-700 transition hover:bg-violet-100" aria-label={`Download application from ${application.dealer_name}`} title="Download application PDF"><FaDownload /></button><button onClick={() => openEdit("application", application)} className="rounded-lg bg-blue-50 p-2 text-blue-700 transition hover:bg-blue-100" aria-label={`Edit ${application.dealer_name}`} title="Edit application"><FaEdit /></button><button onClick={() => deleteRecord("application", application.id, `application from ${application.dealer_name || "this dealer"}`)} className="rounded-lg bg-red-50 p-2 text-red-700 transition hover:bg-red-100" aria-label={`Delete ${application.dealer_name}`} title="Delete application"><FaTrash /></button></div></td></tr>)}</tbody></table>
                 )}
-                {results.length === 0 && <div className="px-6 py-16 text-center"><FaClipboardList className="mx-auto text-3xl text-slate-300" /><p className="mt-3 font-semibold text-slate-700">No {isOrdersTab ? "orders" : isDemosTab ? "demo reports" : "applications"} found</p><p className="mt-1 text-sm text-slate-500">Try a different search or refresh the dashboard.</p></div>}
+                {results.length === 0 && <div className="px-6 py-16 text-center"><FaClipboardList className="mx-auto text-3xl text-slate-300" /><p className="mt-3 font-semibold text-slate-700">No {isOrdersTab ? "orders" : isDemosTab ? "demo reports" : isCouponsTab ? "lucky draw coupons" : "applications"} found</p><p className="mt-1 text-sm text-slate-500">Try a different search or refresh the dashboard.</p></div>}
               </div>
             </section>
           </>
@@ -572,7 +688,7 @@ export default function AdminOrders() {
       {editing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4" role="dialog" aria-modal="true" aria-label="Edit record">
           <form onSubmit={saveEdit} className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl sm:p-8">
-            <div className="flex items-start justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-wider text-green-700">Admin edit</p><h2 className="mt-1 text-2xl font-extrabold text-slate-900">Edit {editing.type === "order" ? "order" : editing.type === "demo" ? "farmer demo report" : "dealership application"}</h2></div><button type="button" onClick={() => setEditing(null)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100" aria-label="Close edit form">×</button></div>
+            <div className="flex items-start justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-wider text-green-700">Admin edit</p><h2 className="mt-1 text-2xl font-extrabold text-slate-900">Edit {editing.type === "order" ? "order" : editing.type === "demo" ? "farmer demo report" : editing.type === "coupon" ? "lucky draw coupon" : "dealership application"}</h2></div><button type="button" onClick={() => setEditing(null)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100" aria-label="Close edit form">×</button></div>
             {editing.type === "order" ? (
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 <label className="grid gap-1 text-sm font-semibold">Customer name<input required value={editData.customer_name} onChange={(event) => setEditData({ ...editData, customer_name: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
@@ -600,6 +716,16 @@ export default function AdminOrders() {
                 <label className="grid gap-1 text-sm font-semibold">Officer name<input value={editData.officer_name} onChange={(event) => setEditData({ ...editData, officer_name: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
                 <label className="grid gap-1 text-sm font-semibold">Report location<input value={editData.report_location} onChange={(event) => setEditData({ ...editData, report_location: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
                 <label className="grid gap-1 text-sm font-semibold sm:col-span-2">Final observation<textarea rows="3" value={editData.final_observation} onChange={(event) => setEditData({ ...editData, final_observation: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+              </div>
+            ) : editing.type === "coupon" ? (
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                <label className="grid gap-1 text-sm font-semibold sm:col-span-2">Coupon number<input value={editData.coupon_number} readOnly className="cursor-not-allowed rounded-lg border bg-slate-50 p-3 font-normal text-slate-500" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Dealer name<input required value={editData.dealer_name} onChange={(event) => setEditData({ ...editData, dealer_name: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Shop name<input required value={editData.shop_name} onChange={(event) => setEditData({ ...editData, shop_name: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Mobile number<input required inputMode="numeric" maxLength="10" value={editData.mobile} onChange={(event) => setEditData({ ...editData, mobile: event.target.value.replace(/\D/g, "") })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold sm:col-span-2">Address<textarea required rows="3" value={editData.address} onChange={(event) => setEditData({ ...editData, address: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Coupon amount (₹)<input required type="number" min="0" step="0.01" value={editData.coupon_amount} onChange={(event) => setEditData({ ...editData, coupon_amount: event.target.value })} className="rounded-lg border p-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">Status<select value={editData.status} onChange={(event) => setEditData({ ...editData, status: event.target.value })} className="rounded-lg border p-3 font-normal">{couponStatuses.map((status) => <option key={status}>{status}</option>)}</select></label>
               </div>
             ) : (
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
