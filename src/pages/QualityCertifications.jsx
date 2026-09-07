@@ -119,7 +119,7 @@ export default function QualityCertifications() {
     <div className="bg-green-700 text-white rounded-3xl p-10 text-center">
 
       <img
-        src="/director3.png"
+        src="/director3.webp"
         alt="Director"
         className="w-32 h-32 rounded-full mx-auto mb-6 object-cover border-4 border-white"
       />

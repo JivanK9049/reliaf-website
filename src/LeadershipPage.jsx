@@ -5,7 +5,7 @@ const leaders = [
   {
     name: "Mr. Shashikant Kulkarni",
     role: "Founder & Managing Director",
-    image: "/director1.png",
+    image: "/director1.webp",
     experience: "30+",
     experienceLabel: "Years of experience",
     focus: "Farmer Guidance",
@@ -16,7 +16,7 @@ const leaders = [
     name: "Mr. Vishvajeet Jagtap",
     role: "Founder, Director of Operations & Production Head",
     qualification: "B.Sc. Agriculture",
-    image: "/director2.png",
+    image: "/director2.webp",
     experience: "3+",
     experienceLabel: "Years of experience",
     focus: "Market Research",
@@ -27,7 +27,7 @@ const leaders = [
     name: "Mr. Shriram Kulkarni",
     role: "Director – Founder & Managing Director",
     qualification: "ABM & MBA in Agriculture",
-    image: "/director3.png",
+    image: "/director3.webp",
     experience: "3+",
     experienceLabel: "Years of experience",
     focus: "Product Development",
@@ -52,7 +52,7 @@ export default function LeadershipPage() {
         <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#facc15]/15 blur-3xl" />
         <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4">
           <a href="/" className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2 font-semibold transition hover:-translate-x-1 hover:bg-white hover:text-[#14532d]"><FaArrowLeft /> Back to Home</a>
-          <img src="/logo.png" alt="Reliaf Agrotech" className="h-12 rounded-lg bg-white/95 p-1.5 md:h-16" />
+          <img src="/logo.webp" alt="Reliaf Agrotech" className="h-12 rounded-lg bg-white/95 p-1.5 md:h-16" />
         </div>
       </header>
 

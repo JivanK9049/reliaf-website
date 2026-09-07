@@ -133,7 +133,7 @@ export default function AdminOrders() {
 
     let logoDataUrl = null;
     try {
-      const logoCandidates = ["/logo.png", "/logo.jpg"];
+      const logoCandidates = ["/logo.webp", "/logo.jpg"];
       for (const logoUrl of logoCandidates) {
         const response = await fetch(logoUrl, { cache: "no-store" });
         if (!response.ok) continue;
@@ -234,7 +234,7 @@ export default function AdminOrders() {
 
     let logoDataUrl = null;
     try {
-      const response = await fetch("/logo.png", { cache: "no-store" });
+      const response = await fetch("/logo.webp", { cache: "no-store" });
       if (response.ok) {
         const logoBlob = await response.blob();
         logoDataUrl = await new Promise((resolve, reject) => {
@@ -308,7 +308,7 @@ export default function AdminOrders() {
     const pdf = new jsPDF({ unit: "mm", format: "a4" });
     let logoDataUrl = null;
     try {
-      const response = await fetch("/logo.png", { cache: "no-store" });
+      const response = await fetch("/logo.webp", { cache: "no-store" });
       if (response.ok) {
         const blob = await response.blob();
         logoDataUrl = await new Promise((resolve, reject) => {
@@ -382,7 +382,7 @@ export default function AdminOrders() {
       demo.before_image_url ? `<div class="photo"><img src="${demo.before_image_url}" alt="Before demonstration" /></div>` : "",
       demo.after_image_url ? `<div class="photo"><img src="${demo.after_image_url}" alt="After demonstration" /></div>` : "",
     ].filter(Boolean).join("");
-    printWindow.document.write(`<!DOCTYPE html><html><head><title>Farmer Demo Report</title><style>body{font-family:Arial,sans-serif;padding:24px;color:#0f172a;}h1{font-size:24px;margin-bottom:12px;}p{margin:6px 0;} .brand{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc;margin-bottom:16px;} .brand img{max-width:140px;max-height:48px;} .photos{display:grid;gap:12px;margin-top:16px;} img{max-width:100%;border:1px solid #cbd5e1;border-radius:8px;}</style></head><body><div class="brand"><img src="/logo.png" alt="Reliaf Agrotech" /><div><strong>Reliaf Agrotech</strong><br />Farmer Demonstration Report</div></div><p><strong>Farmer:</strong> ${demo.farmer_name || "-"}</p><p><strong>Mobile:</strong> ${demo.mobile || "-"}</p><p><strong>Location:</strong> ${location || "-"}</p><p><strong>Crop:</strong> ${demo.crop_name || "-"}</p><p><strong>Demo product:</strong> ${demo.demo_product || "-"}</p><p><strong>Application method:</strong> ${demo.application_method || "-"}</p><p><strong>Demo date:</strong> ${demo.demo_date || "-"}</p><p><strong>Follow-up date:</strong> ${demo.follow_up_date || "-"}</p><p><strong>Days after demo:</strong> ${demo.days_after_demo || "-"}</p><p><strong>Officer:</strong> ${demo.officer_name || "-"}</p><p><strong>Report location:</strong> ${demo.report_location || "-"}</p><p><strong>Observation:</strong> ${demo.final_observation || "-"}</p>${photoMarkup ? `<div class="photos">${photoMarkup}</div>` : "<p>No photos uploaded.</p>"}</body></html>`);
+    printWindow.document.write(`<!DOCTYPE html><html><head><title>Farmer Demo Report</title><style>body{font-family:Arial,sans-serif;padding:24px;color:#0f172a;}h1{font-size:24px;margin-bottom:12px;}p{margin:6px 0;} .brand{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc;margin-bottom:16px;} .brand img{max-width:140px;max-height:48px;} .photos{display:grid;gap:12px;margin-top:16px;} img{max-width:100%;border:1px solid #cbd5e1;border-radius:8px;}</style></head><body><div class="brand"><img src="/logo.webp" alt="Reliaf Agrotech" /><div><strong>Reliaf Agrotech</strong><br />Farmer Demonstration Report</div></div><p><strong>Farmer:</strong> ${demo.farmer_name || "-"}</p><p><strong>Mobile:</strong> ${demo.mobile || "-"}</p><p><strong>Location:</strong> ${location || "-"}</p><p><strong>Crop:</strong> ${demo.crop_name || "-"}</p><p><strong>Demo product:</strong> ${demo.demo_product || "-"}</p><p><strong>Application method:</strong> ${demo.application_method || "-"}</p><p><strong>Demo date:</strong> ${demo.demo_date || "-"}</p><p><strong>Follow-up date:</strong> ${demo.follow_up_date || "-"}</p><p><strong>Days after demo:</strong> ${demo.days_after_demo || "-"}</p><p><strong>Officer:</strong> ${demo.officer_name || "-"}</p><p><strong>Report location:</strong> ${demo.report_location || "-"}</p><p><strong>Observation:</strong> ${demo.final_observation || "-"}</p>${photoMarkup ? `<div class="photos">${photoMarkup}</div>` : "<p>No photos uploaded.</p>"}</body></html>`);
     printWindow.document.close();
     printWindow.focus();
     setTimeout(() => printWindow.print(), 300);

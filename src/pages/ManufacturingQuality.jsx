@@ -25,7 +25,7 @@ export default function ManufacturingQuality() {
         {/* Image 1 */}
         <div data-aos="fade-up" className="bg-white rounded-3xl shadow-xl overflow-hidden mb-10 transition duration-300 hover:shadow-2xl">
           <img
-            src="/research-quality.png"
+            src="/research-quality.webp"
             alt="Research Based Better Results"
             className="w-full" loading="lazy"
           />
@@ -46,7 +46,7 @@ export default function ManufacturingQuality() {
         {/* Image 2 */}
         <div data-aos="fade-up" className="bg-white rounded-3xl shadow-xl overflow-hidden mb-10 transition duration-300 hover:shadow-2xl">
           <img
-            src="/labtestphoto.png"
+            src="/labtestphoto.webp"
             alt="Laboratory Quality Testing"
             className="w-full" loading="lazy"
           />
@@ -105,7 +105,7 @@ export default function ManufacturingQuality() {
     <div className="bg-green-700 text-white rounded-3xl p-10 text-center">
 
       <img
-        src="/director1.png"
+        src="/director1.webp"
         alt="Director"
         className="w-32 h-32 rounded-full mx-auto mb-6 object-cover border-4 border-white"
       />

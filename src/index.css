@@ -146,7 +146,18 @@ html {
 }
 
 .hero-bg {
-  animation: zoomBackground 8s ease-in-out infinite alternate;
+  animation: zoomBackground 18s ease-in-out infinite alternate;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.hero-content-card {
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 2rem;
+  background: linear-gradient(135deg, rgba(3, 65, 40, .38), rgba(4, 50, 31, .16));
+  box-shadow: 0 24px 70px rgba(0, 34, 20, .28);
+  backdrop-filter: blur(5px);
 }
 
 @keyframes fadeIn {
@@ -174,6 +185,11 @@ html {
   100% {
     transform: translateY(0px);
   }
+}
+
+@media (max-width: 767px) {
+  .hero-bg { animation: none; }
+  .hero-content-card { border-radius: 1.5rem; backdrop-filter: none; }
 }
 
 .float-card {

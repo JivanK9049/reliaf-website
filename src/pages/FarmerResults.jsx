@@ -1,14 +1,14 @@
 export default function FarmerResults() {
   const images = [
-    "/result1.png",
-    "/result2.png",
-    "/result3.png",
-    "/result4.png",
-    "/result5.png",
-    "/result6.png",
-    "/result7.png",
-    "/result8.png",
-    "/result9.png",
+    "/result1.webp",
+    "/result2.webp",
+    "/result3.webp",
+    "/result4.webp",
+    "/result5.webp",
+    "/result6.webp",
+    "/result7.webp",
+    "/result8.webp",
+    "/result9.webp",
   ];
 
   return (
@@ -19,7 +19,7 @@ export default function FarmerResults() {
         className="relative h-[350px] md:h-[500px] flex items-center justify-center"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(0,80,30,0.65), rgba(0,80,30,0.65)), url('/result5.png')",
+            "linear-gradient(rgba(0,80,30,0.65), rgba(0,80,30,0.65)), url('/result5.webp')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -128,7 +128,7 @@ export default function FarmerResults() {
     <div className="bg-green-700 text-white rounded-3xl p-10 text-center">
 
       <img
-        src="/director3.png"
+        src="/director3.webp"
         alt="Director"
         className="w-32 h-32 rounded-full mx-auto mb-6 object-cover border-4 border-white"
       />

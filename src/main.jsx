@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, Suspense, lazy } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
@@ -7,26 +7,26 @@ import "aos/dist/aos.css";
 
 import "./index.css";
 import App from "./App.jsx";
-import LeadershipPage from "./LeadershipPage";
-import ProductQuality from "./pages/ProductQuality";
-import ManufacturingQuality from "./pages/ManufacturingQuality";
-import FarmerResults from "./pages/FarmerResults";
-import QualityCertifications from "./pages/QualityCertifications";
-import LabTesting from "./pages/LabTesting";
-import PrivacyPolicy from "./PrivacyPolicy";
-import Careers from "./pages/Careers";
-import AdminOrders from "./AdminOrders";
-import AdminLogin from "./AdminLogin";
-import ProtectedRoute from "./ProtectedRoute";
-import Dealership from "./pages/Dealership";
-import ContactPage from "./pages/ContactPage";
-import ProductPage from "./pages/ProductPage";
-import FarmerDemo from "./pages/FarmerDemo";
-import LuckyDrawCoupon from "./pages/LuckyDrawCoupon";
-import EmployeeTracking from "./pages/EmployeeTracking";
-import EmployeeLogin from "./pages/EmployeeLogin";
-import EmployeePortal from "./pages/EmployeePortal";
-import TrackingAdmin from "./pages/TrackingAdmin";
+const LeadershipPage = lazy(() => import("./LeadershipPage"));
+const ProductQuality = lazy(() => import("./pages/ProductQuality"));
+const ManufacturingQuality = lazy(() => import("./pages/ManufacturingQuality"));
+const FarmerResults = lazy(() => import("./pages/FarmerResults"));
+const QualityCertifications = lazy(() => import("./pages/QualityCertifications"));
+const LabTesting = lazy(() => import("./pages/LabTesting"));
+const PrivacyPolicy = lazy(() => import("./PrivacyPolicy"));
+const Careers = lazy(() => import("./pages/Careers"));
+const AdminOrders = lazy(() => import("./AdminOrders"));
+const AdminLogin = lazy(() => import("./AdminLogin"));
+const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
+const Dealership = lazy(() => import("./pages/Dealership"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
+const ProductPage = lazy(() => import("./pages/ProductPage"));
+const FarmerDemo = lazy(() => import("./pages/FarmerDemo"));
+const LuckyDrawCoupon = lazy(() => import("./pages/LuckyDrawCoupon"));
+const EmployeeTracking = lazy(() => import("./pages/EmployeeTracking"));
+const EmployeeLogin = lazy(() => import("./pages/EmployeeLogin"));
+const EmployeePortal = lazy(() => import("./pages/EmployeePortal"));
+const TrackingAdmin = lazy(() => import("./pages/TrackingAdmin"));
 
 AOS.init({
   duration: 1000,
@@ -37,6 +37,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <HelmetProvider>
       <BrowserRouter>
+        <Suspense fallback={<div className="grid min-h-screen place-items-center bg-green-50 font-semibold text-green-800">Loading Reliaf…</div>}>
         <Routes>
         <Route path="/" element={<App />} />
         <Route path="/quality/product-quality" element={<ProductQuality />} />
@@ -61,6 +62,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/employee-tracking/admin" element={<TrackingAdmin />} />
         
         </Routes>
+        </Suspense>
       </BrowserRouter>
     </HelmetProvider>
   </StrictMode>

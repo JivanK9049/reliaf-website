@@ -195,14 +195,14 @@ const Dealership = () => {
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <img src="/hero1.png" alt="Healthy green crops in a field" className="h-full w-full object-cover" />
+          <img src="/hero1.webp" alt="Healthy green crops in a field" className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-green-950/75" />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-6 py-24">
           <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="text-center text-white">
             <Link to="/" className="mx-auto mb-7 flex w-fit items-center justify-center rounded-2xl bg-white p-2 shadow-xl" aria-label="Reliaf Agrotech home">
-              <img src="/logo.png" alt="Reliaf Agrotech Pvt. Ltd." className="h-16 w-16 object-contain sm:h-20 sm:w-20" />
+              <img src="/logo.webp" alt="Reliaf Agrotech Pvt. Ltd." className="h-16 w-16 object-contain sm:h-20 sm:w-20" />
             </Link>
             <span className="rounded-full bg-yellow-400 px-5 py-2 font-semibold text-green-950">Join India's growing dealer network</span>
             <h1 className="mt-8 text-4xl font-extrabold leading-tight sm:text-6xl">
@@ -281,7 +281,7 @@ const Dealership = () => {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-8 text-center md:flex-row md:text-left">
           <div className="flex items-center gap-4">
             <div className="rounded-xl bg-white p-2">
-              <img src="/logo.png" alt="Reliaf Agrotech Pvt. Ltd." className="h-14 w-14 object-contain" />
+              <img src="/logo.webp" alt="Reliaf Agrotech Pvt. Ltd." className="h-14 w-14 object-contain" />
             </div>
             <div>
               <p className="text-lg font-bold">Reliaf Agrotech Pvt. Ltd.</p>

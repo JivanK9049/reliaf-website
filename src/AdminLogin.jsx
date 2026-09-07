@@ -42,7 +42,7 @@ export default function AdminLogin() {
 
         <div className="text-center mb-6">
           <img
-            src="/logo.png"
+            src="/logo.webp"
             alt="Reliaf Agrotech"
             className="h-20 mx-auto mb-4"
           />

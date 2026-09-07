@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 
+const heroImages = ["/hero1.webp", "/hero2.png", "/hero3.png", "/hero4.png", "/hero5.png"];
+
 export default function ReliafAgrotechWebsite() {
 const [cart, setCart] = useState([]);
 const [showAllProducts, setShowAllProducts] = useState(false);
@@ -13,14 +15,6 @@ const [loading, setLoading] = useState(false);
 const [showMobileMenu, setShowMobileMenu] = useState(false);
 const [qualityOpen, setQualityOpen] = useState(false);
 const [currentImage, setCurrentImage] = useState(0);
-const heroImages = [
-  "/hero1.png",
-  "/hero2.png",
-  "/hero3.png",
-  "/hero4.png",
-  "/hero5.png",
-];
-
 const [lang,setLang]=useState("en");
 
 useEffect(() => {
@@ -36,7 +30,7 @@ useEffect(() => {
   }, 5000);
 
   return () => clearInterval(interval);
-}, [heroImages.length]);
+}, []);
 const translations = {
 
 en:{
@@ -121,118 +115,118 @@ const products=[
 
 {
   title: "Root Faster 98%",
-  image: "/Root Faster.png",
+  image: "/Root Faster.webp",
   desc: "Advanced humic-based formulation for stronger roots, improved nutrient availability, healthier plants and higher yields."
 },
 
 {
 title:"Reliaf P+",
-image:"/p-bacteria.png",
+image:"/p-bacteria.webp",
 desc:"Improves phosphorus uptake"
 },
 
 {
 title:"Reliaf K+",
-image:"/k-bacteria.png",
+image:"/k-bacteria.webp",
 desc:"Improves potash uptake"
 },
 
 {
 title:"Reliaf N+",
-image:"/n-bacatria.png",
+image:"/n-bacatria.webp",
 desc:"Nitrogen fixing bacteria"
 },
 {
 title:"Reliaf Z+",
-image:"/z-bacteria.png",
+image:"/z-bacteria.webp",
 desc:"Improves zinc availability in soil"
 },
 
 {
 title:"Setting Plus",
-image:"/Seting Plus.png",
+image:"/Seting Plus.webp",
 desc:"Supports flowering and fruit setting"
 },
 
 {
 title:"Humi boost",
-image:"/Humi boots.png",
+image:"/Humi boots.webp",
 desc:"Enhances root growth and nutrient absorption"
 },
 
 {
 title:"All In One",
-image:"/all-in-one.png",
+image:"/all-in-one.webp",
 desc:"Complete nutrition for crops"
 },
 {
 title:"Corn Special",
-image:"/corn-special.png",
+image:"/corn-special.webp",
 desc:"Special nutrient formula for corn crop growth, strong roots and higher yield."
 },
 
 {
 title:"Tur Udid Special",
-image:"/tur-udid-special.png",
+image:"/tur-udid-special.webp",
 desc:"Improves flowering, pod formation and productivity in Tur and Udid crops."
 },
 
 {
 title:"Cotton Special",
-image:"/cotton-special.png",
+image:"/cotton-special.webp",
 desc:"Supports boll development, flowering and healthy cotton growth."
 },
 
 {
 title:"Fast Spreader",
-image:"/fast-spreader.png",
+image:"/fast-spreader.webp",
 desc:"Improves spray spreading and absorption on crop leaves."
 },
 
 {
 title:"Soya Special",
-image:"/soya-special.png",
+image:"/soya-special.webp",
 desc:"Balanced nutrition for soybean crop growth and better production."
 },
 {
 title:"RE TRICO",
-image:"/retrico.png",
+image:"/retrico.webp",
 desc:"Nature's micro power for healthy crops, stronger roots and higher yields."
 },
 
 {
 title:"RE BACILA",
-image:"/rebacila.png",
+image:"/rebacila.webp",
 desc:"Beneficial Bacillus formulation for soil health, disease protection and better productivity."
 },
 
 {
 title:"RE PAECILO",
-image:"/repaecilo.png",
+image:"/repaecilo.webp",
 desc:"Powerful bio-formulation for nematode management, stronger roots and healthy crop growth."
 },
 
 {
 title:"RE FLOWER",
-image:"/reflower.png",
+image:"/reflower.webp",
 desc:"Promotes flowering, pollination, fruit setting and higher crop yield."
 },
 
 {
 title:"RHIZO MAX",
-image:"/rhizomax.png",
+image:"/rhizomax.webp",
 desc:"Advanced root promoter for stronger roots, nutrient uptake and vigorous growth."
 },
 
 {
 title:"RE SUDO",
-image:"/resudo.png",
+image:"/resudo.webp",
 desc:"Bio-enriched microbial formulation for healthy soil, stronger plants and higher yields."
 },
 
 {
 title:"GROW MIX FERT",
-image:"/growmixfert.png",
+image:"/growmixfert.webp",
 desc:"Complete multi-nutrient formula for balanced nutrition, better growth and maximum productivity."
 },
 
@@ -392,7 +386,7 @@ justify-between
   ☰
 </button>
 <img
-  src="/logo.png"
+  src="/logo.webp"
   alt="logo"
   className="
     w-14
@@ -683,7 +677,6 @@ text-sm
   min-h-screen
   flex
   items-center
-  bg-fixed
   overflow-hidden
   text-white
   px-5
@@ -723,7 +716,7 @@ text-sm
 <div className="bg-white p-2 rounded-2xl shadow-2xl flex items-center justify-center w-20 h-20 md:w-28 md:h-28 shrink-0">
 
 <img
-src="/logo.png"
+src="/logo.webp"
 alt="Reliaf Logo"
 className="w-full h-full object-contain"
 />
@@ -750,7 +743,7 @@ className="w-full h-full object-contain"
 
 {/* HERO CONTENT */}
 
-<div className="max-w-4xl mx-auto text-center mt-12">
+<div className="hero-content-card max-w-4xl mx-auto text-center mt-12">
 
 {/* LEFT SIDE */}
 
@@ -792,7 +785,7 @@ className="w-full h-full object-contain"
 
 </p>
 
-<div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center md:justify-start">
+<div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
 
   <a
     href="#products"
@@ -845,19 +838,15 @@ className="w-full h-full object-contain"
     text-center
     "
   >
-  <a
-  href="/quality-policy"
-  className="hover:text-green-700 transition"
-> 
-<a
-href="/privacy-policy"
-  className="hover:text-green-700 transition"
-></a>
-</a>
-
     Meet Our Leadership Team
   </a>
 
+</div>
+
+<div className="mt-8 flex flex-wrap justify-center gap-3 text-sm font-semibold text-green-50">
+  <span className="rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur">Research-led solutions</span>
+  <span className="rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur">Quality assured</span>
+  <span className="rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur">Built for Indian farms</span>
 </div>
 </div> 
 {/* RIGHT SIDE IMAGE */}
@@ -918,6 +907,8 @@ h-[220px] sm:h-[280px] md:h-[380px]
 
 <img
   src={item.image}
+  loading="lazy"
+  decoding="async"
   alt={item.title}
   loading="lazy"
   decoding="async"

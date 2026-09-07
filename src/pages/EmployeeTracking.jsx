@@ -59,7 +59,7 @@ export default function EmployeeTracking({ mode }) {
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
           <a href="/" className="flex items-center gap-3">
-            <img src="/logo.png" alt="Reliaf Agrotech" className="h-11 w-11 rounded-xl object-cover" />
+            <img src="/logo.webp" alt="Reliaf Agrotech" className="h-11 w-11 rounded-xl object-cover" />
             <div>
               <p className="text-lg font-extrabold leading-tight text-emerald-800">Reliaf Track</p>
               <p className="text-xs font-medium text-slate-500">Field Force Management</p>
@@ -122,7 +122,7 @@ export default function EmployeeTracking({ mode }) {
 }
 
 function TrackingHeader({ title, subtitle, admin = false }) {
-  return <header className="border-b border-slate-200 bg-white"><div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6"><a href="/" className="flex items-center gap-3"><img src="/logo.png" alt="Reliaf Agrotech" className="h-10 w-10 rounded-xl object-cover" /><div><p className="font-extrabold text-emerald-800">Reliaf Track</p><p className="text-xs text-slate-500">{subtitle}</p></div></a><div className="hidden text-right sm:block"><p className="text-sm font-bold text-slate-800">{title}</p><a href={admin ? "/employee-tracking/employee" : "/employee-tracking/admin"} className="text-xs font-semibold text-emerald-700 hover:underline">Open {admin ? "employee app" : "admin dashboard"}</a></div></div></header>;
+  return <header className="border-b border-slate-200 bg-white"><div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6"><a href="/" className="flex items-center gap-3"><img src="/logo.webp" alt="Reliaf Agrotech" className="h-10 w-10 rounded-xl object-cover" /><div><p className="font-extrabold text-emerald-800">Reliaf Track</p><p className="text-xs text-slate-500">{subtitle}</p></div></a><div className="hidden text-right sm:block"><p className="text-sm font-bold text-slate-800">{title}</p><a href={admin ? "/employee-tracking/employee" : "/employee-tracking/admin"} className="text-xs font-semibold text-emerald-700 hover:underline">Open {admin ? "employee app" : "admin dashboard"}</a></div></div></header>;
 }
 
 function EmployeeWorkspace({ dayStarted, setDayStarted, notice, notify }) {
