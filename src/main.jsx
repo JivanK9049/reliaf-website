@@ -2,8 +2,6 @@ import { StrictMode, Suspense, lazy } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import AOS from "aos";
-import "aos/dist/aos.css";
 
 import "./index.css";
 import App from "./App.jsx";
@@ -28,10 +26,19 @@ const EmployeeLogin = lazy(() => import("./pages/EmployeeLogin"));
 const EmployeePortal = lazy(() => import("./pages/EmployeePortal"));
 const TrackingAdmin = lazy(() => import("./pages/TrackingAdmin"));
 
-AOS.init({
-  duration: 1000,
-  once: true,
-});
+// Animation code is intentionally deferred so it cannot delay the first paint.
+// Pages still opt into AOS with their data-aos attributes once the browser is idle.
+const startAnimations = () => {
+  import("aos").then(({ default: AOS }) => {
+    import("aos/dist/aos.css").then(() => AOS.init({ duration: 700, once: true }));
+  });
+};
+
+if ("requestIdleCallback" in window) {
+  window.requestIdleCallback(startAnimations, { timeout: 3000 });
+} else {
+  window.setTimeout(startAnimations, 1500);
+}
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

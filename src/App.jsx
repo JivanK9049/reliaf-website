@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { supabase } from "./supabase";
 
-const heroImages = ["/hero1.webp", "/hero2.png", "/hero3.png", "/hero4.png", "/hero5.png"];
+const heroImage = "/hero1.webp";
 
 export default function ReliafAgrotechWebsite() {
 const [cart, setCart] = useState([]);
@@ -14,7 +13,6 @@ const [paymentMethod, setPaymentMethod] = useState("Pay after confirmation");
 const [loading, setLoading] = useState(false);
 const [showMobileMenu, setShowMobileMenu] = useState(false);
 const [qualityOpen, setQualityOpen] = useState(false);
-const [currentImage, setCurrentImage] = useState(0);
 const [lang,setLang]=useState("en");
 
 useEffect(() => {
@@ -22,15 +20,6 @@ useEffect(() => {
     "Reliaf Agrotech Pvt Ltd | Bio Fertilizers & Agricultural Solutions";
 }, []);
 
-useEffect(() => {
-  const interval = setInterval(() => {
-    setCurrentImage((prev) =>
-      (prev + 1) % heroImages.length
-    );
-  }, 5000);
-
-  return () => clearInterval(interval);
-}, []);
 const translations = {
 
 en:{
@@ -287,6 +276,8 @@ const handleSubmit = async (e) => {
   }
 
   try {
+    // The database SDK is needed only after a visitor submits an order.
+    const { supabase } = await import("./supabase");
 
     const { error } = await supabase
       .from("orders")
@@ -530,6 +521,7 @@ Call Now
 <select
 value={lang}
 onChange={(e)=>setLang(e.target.value)}
+aria-label="Choose language"
 className="
 bg-green-50
 border
@@ -685,21 +677,15 @@ text-sm
   "
 >
 
-<div
-  className="absolute inset-0 hero-bg"
-  style={{
-    backgroundImage: `
-      linear-gradient(
-        rgba(0,80,30,0.65),
-        rgba(0,80,30,0.65)
-      ),
-      url(${heroImages[currentImage]})
-    `,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-  }}
-></div>
+<img
+  src={heroImage}
+  alt=""
+  aria-hidden="true"
+  fetchPriority="high"
+  decoding="async"
+  className="absolute inset-0 h-full w-full object-cover"
+/>
+<div className="absolute inset-0 bg-[rgba(0,80,30,0.65)]"></div>
 
 <div className="relative z-10 max-w-7xl mx-auto">
 
@@ -910,8 +896,6 @@ h-[220px] sm:h-[280px] md:h-[380px]
   loading="lazy"
   decoding="async"
   alt={item.title}
-  loading="lazy"
-  decoding="async"
   className="
   max-h-full
   max-w-full
@@ -1684,6 +1668,7 @@ minLength={3}
 value={name}
 onChange={(e)=>setName(e.target.value)}
 placeholder={t.name}
+aria-label={t.name}
 className="border p-4 rounded-xl"
 />
 
@@ -1700,6 +1685,7 @@ onChange={(e)=>
   )
 }
 placeholder={t.mobile}
+aria-label={t.mobile}
 className="border p-4 rounded-xl"
 />
 
@@ -1710,6 +1696,7 @@ required
 value={village}
 onChange={(e)=>setVillage(e.target.value)}
 placeholder={t.village}
+aria-label={t.village}
 className="border p-4 rounded-xl"
 />
 
@@ -1777,6 +1764,7 @@ cart.map((item,index)=>(
 value={requirement}
 onChange={(e)=>setRequirement(e.target.value)}
 placeholder={t.message}
+aria-label={t.message}
 rows="5"
 className="border p-4 rounded-xl md:col-span-2"
 />
