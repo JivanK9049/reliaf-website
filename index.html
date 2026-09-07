@@ -86,14 +86,23 @@ html {
     Reliaf Agrotech Pvt Ltd | Trusted By Farmers
   </title>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q6BSNVENY7"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-Q6BSNVENY7');
+  // Analytics is non-essential for the first view. Delaying it avoids
+  // competing with the hero image, CSS, and application startup on mobile.
+  window.addEventListener('load', function () {
+    window.setTimeout(function () {
+      var analytics = document.createElement('script');
+      analytics.src = 'https://www.googletagmanager.com/gtag/js?id=G-Q6BSNVENY7';
+      analytics.async = true;
+      analytics.onload = function () {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Q6BSNVENY7');
+      };
+      document.head.appendChild(analytics);
+    }, 2500);
+  }, { once: true });
 </script>
 
 </head>
