@@ -23,6 +23,10 @@ import ContactPage from "./pages/ContactPage";
 import ProductPage from "./pages/ProductPage";
 import FarmerDemo from "./pages/FarmerDemo";
 import LuckyDrawCoupon from "./pages/LuckyDrawCoupon";
+import EmployeeTracking from "./pages/EmployeeTracking";
+import EmployeeLogin from "./pages/EmployeeLogin";
+import EmployeePortal from "./pages/EmployeePortal";
+import TrackingAdmin from "./pages/TrackingAdmin";
 
 AOS.init({
   duration: 1000,
@@ -50,6 +54,11 @@ createRoot(document.getElementById("root")).render(
         <Route path="/products/:slug" element={<ProductPage />} />
         <Route path="/farmer-demo" element={<FarmerDemo />} />
         <Route path="/lucky-draw-coupon" element={<ProtectedRoute><LuckyDrawCoupon /></ProtectedRoute>} />
+        <Route path="/employee-tracking" element={<EmployeeTracking />} />
+        <Route path="/employee-tracking/login" element={<EmployeeLogin />} />
+        <Route path="/employee-tracking/admin-login" element={<EmployeeLogin admin />} />
+        <Route path="/employee-tracking/employee" element={<EmployeePortal />} />
+        <Route path="/employee-tracking/admin" element={<TrackingAdmin />} />
         
         </Routes>
       </BrowserRouter>

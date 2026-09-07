@@ -492,6 +492,10 @@ Products
   Farmer Demo
 </a>
 
+<a href="/employee-tracking/login" className="hover:text-green-700 transition">
+  Employee Login
+</a>
+
 <a href="/contact" className="hover:text-green-700 transition">
 Contact
 </a>
@@ -651,6 +655,13 @@ text-sm
       className="block p-4 border-b"
     >
       Farmer Demo
+    </a>
+    <a
+      href="/employee-tracking/login"
+      onClick={() => setShowMobileMenu(false)}
+      className="block p-4 border-b"
+    >
+      Employee Login
     </a>
     <a
       href="/privacy-policy"

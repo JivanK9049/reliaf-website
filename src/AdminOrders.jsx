@@ -22,6 +22,7 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import { supabase } from "./supabase";
+import TrackingAdmin from "./pages/TrackingAdmin";
 
 const orderStatuses = ["Pending", "Confirmed", "Dispatched", "Delivered"];
 const applicationStatuses = ["New", "Contacted", "Under Review", "Approved", "Rejected"];
@@ -75,6 +76,7 @@ export default function AdminOrders() {
   const isDemosTab = activeTab === "demos";
   const isApplicationsTab = activeTab === "applications";
   const isCouponsTab = activeTab === "coupons";
+  const isTrackingTab = activeTab === "tracking";
 
   useEffect(() => {
     let isCurrent = true;
@@ -86,6 +88,11 @@ export default function AdminOrders() {
 
       if (!session) {
         navigate("/admin/login", { replace: true });
+        return;
+      }
+
+      if (activeTab === "tracking") {
+        setLoading(false);
         return;
       }
 
@@ -618,10 +625,13 @@ export default function AdminOrders() {
           <button onClick={() => switchTab("applications")} className={`inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold transition ${isApplicationsTab ? "bg-green-700 text-white shadow" : "text-slate-600 hover:bg-green-50"}`}><FaStore /> Dealership applications <span className={`rounded-full px-2 py-0.5 text-xs ${isApplicationsTab ? "bg-white/20" : "bg-slate-100"}`}>{applications.length}</span></button>
           <button onClick={() => switchTab("coupons")} className={`inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold transition ${isCouponsTab ? "bg-green-700 text-white shadow" : "text-slate-600 hover:bg-green-50"}`}><FaTicketAlt /> Lucky draw coupons <span className={`rounded-full px-2 py-0.5 text-xs ${isCouponsTab ? "bg-white/20" : "bg-slate-100"}`}>{coupons.length}</span></button>
           <button onClick={() => switchTab("demos")} className={`inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold transition ${isDemosTab ? "bg-green-700 text-white shadow" : "text-slate-600 hover:bg-green-50"}`}><FaClipboardList /> Farmer demos <span className={`rounded-full px-2 py-0.5 text-xs ${isDemosTab ? "bg-white/20" : "bg-slate-100"}`}>{demos.length}</span></button>
+          <button onClick={() => switchTab("tracking")} className={`inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold transition ${isTrackingTab ? "bg-green-700 text-white shadow" : "text-slate-600 hover:bg-green-50"}`}><FaUsers /> Employee tracking</button>
           <button onClick={() => setRefreshKey((key) => key + 1)} className="ml-auto inline-flex items-center gap-2 rounded-xl px-4 py-3 font-semibold text-slate-600 hover:bg-slate-100"><FaSyncAlt /> Refresh</button>
         </div>
 
-        {error ? (
+        {isTrackingTab ? (
+          <div className="mt-6"><TrackingAdmin embedded /></div>
+        ) : error ? (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-700">Could not load {isOrdersTab ? "orders" : isDemosTab ? "farmer demo reports" : isCouponsTab ? "lucky draw coupons" : "dealership applications"}: {error}</div>
         ) : (
           <>
