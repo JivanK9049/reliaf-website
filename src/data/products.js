@@ -1,4 +1,9 @@
 export const products = [
+  { slug: "re-stick", title: "RE STICK", image: "/re-stick.jpeg", desc: "Natural sticker and spreader that helps spray solutions spread evenly, adhere well and absorb effectively on crop leaves." },
+  { slug: "re-npk-conso", title: "RE NPK CONSO", image: "/re-npk-conso.jpeg", desc: "A bio-consortium of Azotobacter, PSB and KMB that supports nutrient availability, soil fertility and productive crop growth." },
+  { slug: "reliaf-banana-king", title: "Reliaf Banana King", image: "/reliaf-banana-king.jpeg", desc: "A specialised biological kit for banana crops with PSB, KMB, ZMB and mycorrhiza to support roots, nutrient uptake and yield." },
+  { slug: "reliaf-sugar-king", title: "Reliaf Sugar King", image: "/reliaf-sugar-king.jpeg", desc: "A sugarcane-focused biological kit with PSB, KMB, Azotobacter and mycorrhiza for vigorous roots, nutrient uptake and crop quality." },
+  { slug: "reliaf-pomo-king", title: "Reliaf Pomo King", image: "/reliaf-pomo-king.jpeg", desc: "A specialised biological crop-care kit designed to support healthy growth, nutrient efficiency and productive pomegranate cultivation." },
   { slug: "root-faster-98", title: "Root Faster 98%", image: "/Root Faster.webp", desc: "Advanced humic-based formulation for stronger roots, improved nutrient availability, healthier plants and higher yields." },
   { slug: "reliaf-p-plus", title: "Reliaf P+", image: "/p-bacteria.webp", desc: "Improves phosphorus uptake." },
   { slug: "reliaf-k-plus", title: "Reliaf K+", image: "/k-bacteria.webp", desc: "Improves potash uptake." },

@@ -103,6 +103,31 @@ const t = translations[lang];
 const products=[
 
 {
+  title: "RE STICK",
+  image: "/re-stick.jpeg",
+  desc: "Natural sticker and spreader that helps spray solutions spread evenly, adhere well and absorb effectively on crop leaves."
+},
+{
+  title: "RE NPK CONSO",
+  image: "/re-npk-conso.jpeg",
+  desc: "A bio-consortium of Azotobacter, PSB and KMB that supports nutrient availability, soil fertility and productive crop growth."
+},
+{
+  title: "Reliaf Banana King",
+  image: "/reliaf-banana-king.jpeg",
+  desc: "A specialised biological kit for banana crops with PSB, KMB, ZMB and mycorrhiza to support roots, nutrient uptake and yield."
+},
+{
+  title: "Reliaf Sugar King",
+  image: "/reliaf-sugar-king.jpeg",
+  desc: "A sugarcane-focused biological kit with PSB, KMB, Azotobacter and mycorrhiza for vigorous roots, nutrient uptake and crop quality."
+},
+{
+  title: "Reliaf Pomo King",
+  image: "/reliaf-pomo-king.jpeg",
+  desc: "A specialised biological crop-care kit designed to support healthy growth, nutrient efficiency and productive pomegranate cultivation."
+},
+{
   title: "Root Faster 98%",
   image: "/Root Faster.webp",
   desc: "Advanced humic-based formulation for stronger roots, improved nutrient availability, healthier plants and higher yields."
@@ -884,11 +909,12 @@ duration-500
 bg-gradient-to-b
 from-green-50
 to-white
-p-4
+p-1
 flex
 justify-center
 items-center
-h-[220px] sm:h-[280px] md:h-[380px]
+h-[300px] sm:h-[360px] md:h-[440px]
+overflow-hidden
 ">
 
 <img
@@ -902,6 +928,10 @@ h-[220px] sm:h-[280px] md:h-[380px]
   object-contain
   rounded-xl
   product-image
+  scale-[1.025]
+  transition-transform
+  duration-500
+  group-hover:scale-[1.055]
   "
 />
 
