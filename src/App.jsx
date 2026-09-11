@@ -109,12 +109,12 @@ const products=[
 },
 {
   title: "RE NPK CONSO",
-  image: "/re-npk-conso.jpeg",
+  image: "/re-npk-conso.png",
   desc: "A bio-consortium of Azotobacter, PSB and KMB that supports nutrient availability, soil fertility and productive crop growth."
 },
 {
   title: "Reliaf Banana King",
-  image: "/reliaf-banana-king.jpeg",
+  image: "/banana king kit.png",
   desc: "A specialised biological kit for banana crops with PSB, KMB, ZMB and mycorrhiza to support roots, nutrient uptake and yield."
 },
 {
@@ -913,7 +913,8 @@ p-1
 flex
 justify-center
 items-center
-h-[300px] sm:h-[360px] md:h-[440px]
+  h-[240px] sm:h-[280px] md:h-[320px]
+  px-4
 overflow-hidden
 ">
 
