@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { FiChevronDown, FiMenu, FiPhone, FiX } from "react-icons/fi";
 
 const heroImage = "/hero1.webp";
 
@@ -370,54 +371,49 @@ return(
 
 {/* MODERN STICKY NAVBAR */}
 
-<header className="
-sticky
-top-0
-z-50
-relative
-overflow-visible
-backdrop-blur-xl
-bg-white/80
-shadow-md
-border-b
-border-green-100
-">
+<header className="sticky top-0 z-50 relative overflow-visible border-b border-slate-200/80 bg-white/95 shadow-[0_8px_30px_rgba(15,23,42,0.07)] backdrop-blur-xl">
+
+<div className="hidden border-b border-green-900/20 bg-green-950 text-xs font-medium text-green-50 md:block">
+  <div className="mx-auto flex max-w-[1440px] items-center justify-between px-6 py-2">
+    <span>Trusted agricultural solutions for healthier, more productive farms</span>
+    <a href="tel:8793701270" className="inline-flex items-center gap-2 text-green-100 transition hover:text-white">
+      <FiPhone aria-hidden="true" /> +91 87937 01270
+    </a>
+  </div>
+</div>
 
 <div className="
-max-w-7xl
+max-w-[1440px]
 mx-auto
-px-4
-py-3
+px-4 py-3 sm:px-6 lg:py-4
 flex
 items-center
 justify-between
+gap-4
 ">
 
 {/* LEFT */}
-<div className="relative flex items-center gap-2 shrink-0">
+<div className="relative flex min-w-0 items-center gap-3 shrink-0">
 <button
   onClick={() => setShowMobileMenu(!showMobileMenu)}
-  className="xl:hidden text-3xl text-green-700 font-bold"
+  aria-label={showMobileMenu ? "Close navigation menu" : "Open navigation menu"}
+  aria-expanded={showMobileMenu}
+  className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-xl text-green-800 transition hover:border-green-300 hover:bg-green-50 xl:hidden"
 >
-  ☰
+  {showMobileMenu ? <FiX aria-hidden="true" /> : <FiMenu aria-hidden="true" />}
 </button>
 <img
   src="/logo.webp"
-  alt="logo"
-  className="
-    w-14
-    h-14
-    rounded-xl
-    object-cover
-  "
+  alt="Reliaf Agrotech logo"
+  className="h-12 w-12 rounded-xl object-cover shadow-sm sm:h-14 sm:w-14"
 />
 
-<div className="min-w-max">
-<h2 className="font-bold text-xl text-green-800 whitespace-nowrap">
+<div className="min-w-0">
+<h2 className="whitespace-nowrap text-base font-extrabold tracking-tight text-green-900 sm:text-xl">
   Reliaf Agrotech
 </h2>
 
-  <p className="text-sm text-gray-500 whitespace-nowrap">
+  <p className="whitespace-nowrap text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 sm:text-xs">
     Trusted By Farmers
   </p>
 </div>
@@ -430,61 +426,62 @@ justify-between
 hidden
 xl:flex
 items-center
-gap-5
+gap-1
+text-sm
 font-semibold
-text-gray-700
+text-slate-600
 flex-1
 justify-center
 ">
 
-<a href="#products" className="hover:text-green-700 transition">
+<a href="#products" className="rounded-lg px-3 py-2 transition hover:bg-green-50 hover:text-green-800">
 Products
 </a>
 
 <a
   href="/leadership"
-  className="hover:text-green-700 transition"
+  className="rounded-lg px-3 py-2 transition hover:bg-green-50 hover:text-green-800"
 >
   Leadership
 </a>
 <div className="relative group">
-  <button className="hover:text-green-600 font-medium">
-    Quality ▼
+  <button className="inline-flex items-center gap-1 rounded-lg px-3 py-2 font-semibold transition hover:bg-green-50 hover:text-green-800">
+    Quality <FiChevronDown aria-hidden="true" className="text-sm" />
   </button>
 
   <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
     
     <a
       href="/quality/product-quality"
-      className="block px-4 py-3 hover:bg-green-50 border-b"
+      className="block border-b border-slate-100 px-4 py-3 text-sm hover:bg-green-50"
     >
       Product Quality
     </a>
 
     <a
       href="/quality/manufacturing"
-      className="block px-4 py-3 hover:bg-green-50 border-b"
+      className="block border-b border-slate-100 px-4 py-3 text-sm hover:bg-green-50"
     >
       Manufacturing Quality Check
     </a>
 
     <a
       href="/quality/farmer-results"
-      className="block px-4 py-3 hover:bg-green-50 border-b"
+      className="block border-b border-slate-100 px-4 py-3 text-sm hover:bg-green-50"
     >
       Farmer Results
     </a>
 
     <a
       href="/quality/certifications"
-      className="block px-4 py-3 hover:bg-green-50 border-b"
+      className="block border-b border-slate-100 px-4 py-3 text-sm hover:bg-green-50"
     >
       Quality Certifications
     </a>
 
     <a
       href="/quality/lab-testing"
-      className="block px-4 py-3 hover:bg-green-50"
+      className="block px-4 py-3 text-sm hover:bg-green-50"
     >
       Lab Testing
     </a>
@@ -492,26 +489,26 @@ Products
 
   </div>
 </div>
-<a href="/careers" className="hover:text-green-700 transition">
+<a href="/careers" className="rounded-lg px-3 py-2 transition hover:bg-green-50 hover:text-green-800">
   Careers
 </a>
-<a href="/dealership" className="hover:text-green-700 transition">
+<a href="/dealership" className="rounded-lg px-3 py-2 transition hover:bg-green-50 hover:text-green-800">
   Dealership
 </a>
-<a href="/farmer-demo" className="hover:text-green-700 transition">
+<a href="/farmer-demo" className="rounded-lg px-3 py-2 transition hover:bg-green-50 hover:text-green-800">
   Farmer Demo
 </a>
 
-<a href="/employee-tracking/login" className="hover:text-green-700 transition">
+<a href="/employee-tracking/login" className="rounded-lg px-3 py-2 transition hover:bg-green-50 hover:text-green-800">
   Employee Login
 </a>
 
-<a href="/contact" className="hover:text-green-700 transition">
+<a href="/contact" className="rounded-lg px-3 py-2 transition hover:bg-green-50 hover:text-green-800">
 Contact
 </a>
 <a
 href="/privacy-policy"
-  className="hover:text-green-700 transition"
+  className="rounded-lg px-3 py-2 transition hover:bg-green-50 hover:text-green-800"
 >
   Privacy Policy
 </a>
@@ -521,25 +518,13 @@ href="/privacy-policy"
 
 {/* RIGHT */}
 
-<div className="flex items-center gap-3">
+<div className="flex items-center gap-2 sm:gap-3">
 
 <a
 href="tel:8793701270"
-className="
-hidden
-md:flex
-bg-green-700
-text-white
-px-5
-py-2
-rounded-xl
-font-semibold
-hover:bg-green-800
-transition
-"
+className="hidden items-center gap-2 rounded-lg bg-green-700 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-green-800 hover:shadow-md md:flex"
 >
-
-Call Now
+<FiPhone aria-hidden="true" /> Call Now
 
 </a>
 
@@ -547,16 +532,7 @@ Call Now
 value={lang}
 onChange={(e)=>setLang(e.target.value)}
 aria-label="Choose language"
-className="
-bg-green-50
-border
-border-green-200
-rounded-xl
-px-3
-py-2
-outline-none
-text-sm
-"
+className="h-10 rounded-lg border border-slate-200 bg-slate-50 px-2 text-sm font-semibold text-slate-700 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 sm:px-3"
 >
 
 <option value="en">🇺🇸 EN</option>
